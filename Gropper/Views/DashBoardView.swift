@@ -8,9 +8,6 @@
 import SwiftUI
 
 struct DashBoardView: View {
-    @State var createTripForm: Bool = false
-    @State var requestTripForm: Bool = false
-    
     var body: some View {
         NavigationView{
             HStack{ 

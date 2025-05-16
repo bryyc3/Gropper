@@ -9,29 +9,51 @@ import SwiftUI
 import ContactsUI
 
 struct CreateTripView: View {
-    @State var location: String = ""
-    @State var selectedContacts: [CNContact]?
+    @Environment(\.dismiss) var dismiss
+    @State var tripData = TripInfo()
+    @State var selectedContacts: [ContactInfo] = []
     @StateObject private var coordinator = Coordinator()
     
     var body: some View {
-        Form{
-            TextField("Location", text: $location )
-            Button("Select Contacts"){
-                presentContactPicker()
-            }
-            HStack{
-                if let displayedContacts = selectedContacts {
-                    List(displayedContacts) { contact in
-                        Text("\(contact.givenName) \(contact.familyName)")
-                    }
-                } else{
-                    Text("No Contacts Selected")
+        NavigationView {
+            Form{
+                TextField("Location", text: $tripData.location )
+                
+                Button("Select Contacts"){
+                    presentContactPicker()
                 }
+                HStack{
+                    if (selectedContacts.count > 0) {
+                        List(selectedContacts, id: \.phoneNumber) { contact in
+                            Text("\(contact.firstName) \(contact.lastName ?? "")")
+                        }
+                    } else{
+                        Text("No Contacts Selected")
+                    }
+                }
+                .onReceive(coordinator.$selectedContacts, perform: { contactsArray in self.selectedContacts = contactsArray})//once user selects contact update UI variable
             }
-            .onReceive(coordinator.$selectedContacts, perform: { contactsArray in self.selectedContacts = contactsArray})//once user selects contact update UI variable
-        }
-        Button("Create Trip"){
             
+        }
+        .toolbar{
+            ToolbarItem(placement: .confirmationAction){
+                Button("Create Trip"){
+                    tripData.status = true
+                    //dismiss()
+                    Task{
+                        do{
+                            try await createTrip(tripInformation: tripData, contacts: selectedContacts)
+                        } catch TripCreationError.invalidURL {
+                            print ("invalid URL")
+                        }  catch TripCreationError.invalidResponse {
+                            print ("invalid response")
+                        } catch {
+                            print ("unexpected error")
+                        }
+                     }//create trip
+                }
+                .disabled(tripData.location.isEmpty || selectedContacts.isEmpty)
+            }
         }
     }
     
@@ -46,14 +68,19 @@ struct CreateTripView: View {
     
     
     class Coordinator: NSObject, ObservableObject, CNContactPickerDelegate {
-        @Published var selectedContacts: [CNContact]?
-        
+        @Published var selectedContacts: [ContactInfo] = []
+        var contactArray: [ContactInfo] = []
         func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]){
             if(contacts.count > 0){
-                selectedContacts = contacts
+                contactArray = []
+                for contact in contacts {
+                    let contactInfo = ContactInfo(firstName: contact.givenName, lastName: contact.familyName, phoneNumber: contact.phoneNumbers.first?.value.stringValue ?? "")
+                    contactArray.append(contactInfo)
+                }
+                selectedContacts = contactArray
             }
             else {
-                return
+                selectedContacts = []
             }
            
         }

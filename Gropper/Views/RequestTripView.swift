@@ -27,7 +27,7 @@ struct RequestTripView: View {
                 if let displayedContact = selectedContact {
                     Text("\(displayedContact.givenName) \(displayedContact.familyName)")
                 } else{
-                    Text("No Contacts Selected")
+                    Text("No Contact Selected")
                 }
             }
             .onReceive(coordinator.$selectedContact, perform: { contactInfo in self.selectedContact = contactInfo})//once user selects contact update UI variable
