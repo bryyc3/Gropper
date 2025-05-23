@@ -1,5 +1,5 @@
 //
-//  Trips.swift
+//  GetTrips.swift
 //  Gropper
 //
 //  Created by Bryce King on 5/7/25.

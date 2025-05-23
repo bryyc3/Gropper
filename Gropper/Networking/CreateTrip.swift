@@ -9,9 +9,10 @@ import Foundation
 import ContactsUI
 
 
-func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]) async throws /*-> TripInfo*/{
+func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]?) async throws /*-> TripInfo*/{
     let tripData = try JSONEncoder().encode(tripInformation)
     let contactData = try JSONEncoder().encode(contacts)
+    
     guard let tripJsonString = String(data: tripData, encoding: .utf8),
           let contactJsonString = String(data: contactData, encoding: .utf8) else{
         throw TripCreationError.encodingError
@@ -25,9 +26,9 @@ func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]) async throws
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    
-    let body = [tripJsonString,
-                contactJsonString]
+
+    let body = ["tripInfo": tripJsonString,
+                "contacts": contactJsonString]
     
     request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: .fragmentsAllowed)
     
@@ -37,6 +38,7 @@ func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]) async throws
         throw TripCreationError.invalidResponse
     }
     
+    print(data)
     /*do{
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase

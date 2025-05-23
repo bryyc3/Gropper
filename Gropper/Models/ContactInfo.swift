@@ -11,4 +11,10 @@ struct ContactInfo: Codable{
     var firstName: String
     var lastName: String?
     var phoneNumber: String
+    
+    init(){
+        firstName = ""
+        lastName = nil
+        phoneNumber = ""
+    }
 }

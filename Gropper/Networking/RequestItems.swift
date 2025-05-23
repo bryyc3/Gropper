@@ -7,7 +7,7 @@
 
 import Foundation
 
-func requestItems(items: [ItemRequested]) async throws{
+func requestItems(items: [ItemInfo]) async throws{
     let endpoint = "http://localhost:8080/request-items"
     guard let url = URL(string: endpoint) else{
         throw RequestItemsError.invalidURL

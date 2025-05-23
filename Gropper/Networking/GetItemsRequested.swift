@@ -1,13 +1,13 @@
 //
-//  ItemsRequested.swift
+//  GetItemsRequested.swift
 //  Gropper
 //
-//  Created by Bryce King on 5/7/25.
+//  Created by Bryce King on 5/15/25.
 //
 
 import Foundation
 
-func getItems() async throws -> [ItemRequested]{
+func getItems() async throws -> [ItemInfo]{
     let endpoint = "http://localhost:8080/item-requests"
     guard let url = URL(string: endpoint) else{
         throw ItemsRequestedError.invalidURL
@@ -22,7 +22,7 @@ func getItems() async throws -> [ItemRequested]{
     do{
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let items: [ItemRequested] =  try decoder.decode([ItemRequested].self, from: data)
+        let items: [ItemInfo] =  try decoder.decode([ItemInfo].self, from: data)
         return items
     } catch {
         throw ItemsRequestedError.decodingError

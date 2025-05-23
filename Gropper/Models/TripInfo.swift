@@ -9,17 +9,24 @@ import Foundation
 
 
 struct TripInfo: Codable{
-    let tripId: String?
+    var tripId: String?
+    var host: String
     var status: Bool?
     var location: String
+    var locationDescription: String
     var date: String
     var time: String
     
+    var itemsRequested: [ItemInfo]?
+    
     init(){
+        host = ""
         location = ""
         date = ""
         time = ""
+        locationDescription = ""
         tripId = nil
         status = nil
+        itemsRequested = nil
     }
 }
