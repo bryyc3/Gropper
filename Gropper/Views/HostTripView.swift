@@ -61,7 +61,7 @@ struct HostTripView: View {
     }
     
     func createHostedTrip(){
-        tripData.status = true
+        tripData.status = 1
         tripData.host = "1111111111"
         tripData.tripId = UUID().uuidString
         Task{

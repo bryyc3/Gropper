@@ -10,12 +10,26 @@ import SwiftUI
 struct DashBoardView: View {
     var body: some View {
         NavigationView{
-            HStack{ 
+            HStack{
                 NavigationLink("Feeling Generous?"){
-                    CreateTripView()
+                    HostTripView()
                 }
                 NavigationLink("Need Something?"){
                     RequestTripView()
+                }
+                Button("Get Trips"){
+                    Task{
+                        do{
+                            let trips = try await getTrips()
+                            print(trips)
+                        } catch TripDataError.invalidURL {
+                           print ("invalid URL")
+                       }  catch TripDataError.invalidResponse {
+                           print ("invalid response")
+                       } catch {
+                           print ("unexpected error")
+                       }
+                    }
                 }
             }
         }

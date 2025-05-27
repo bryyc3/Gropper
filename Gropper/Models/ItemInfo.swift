@@ -12,9 +12,16 @@ struct ItemInfo: Identifiable, Codable{
     var itemName: String
     var itemDescription: String
     var requestor: String
-    init(){
+    
+    enum CodingKeys: CodingKey {
+            case itemName
+            case itemDescription
+            case requestor
+    }
+    
+    init(requestor: String){
         itemName = ""
         itemDescription = ""
-        requestor = ""
+        self.requestor = requestor
     }
 }

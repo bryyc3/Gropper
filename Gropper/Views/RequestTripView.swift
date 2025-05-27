@@ -47,7 +47,7 @@ struct RequestTripView: View {
                         }
                     }
                     Button("Add Item"){
-                        items.append(ItemInfo())
+                        items.append(ItemInfo(requestor: "1111111111"))
                     }
                 }
             }
