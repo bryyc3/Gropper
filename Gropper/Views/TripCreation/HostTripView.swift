@@ -12,51 +12,55 @@ struct HostTripView: View {
     @StateObject var viewModel = TripCreationViewModel()
     @State private var displayContactPicker = false
     @Environment(\.dismiss) var dismiss
+    var onFormSubmit: () -> Void
     
     var body: some View {
-        NavigationView {
-            Form{
-                Section(header: Text("Where Are You Going?")){
-                    TextField("Location", text: $viewModel.tripData.location )
-                    TextField("Location Description", text: $viewModel.tripData.locationDescription)
-                }
-                Section(header: Text("Who can request items?")){
-                    HStack{
-                        if (viewModel.selectedContacts.count > 0) {
-                            List(viewModel.selectedContacts, id: \.phoneNumber) { contact in
-                                Text("\(contact.firstName) \(contact.lastName ?? "")")
-                            }
-                        } else{
-                            Text("No Contacts Selected")
-                        }
-                    }
-                    Button("Select Contacts"){
-                        displayContactPicker.toggle()
-                    }
-                }
-                
+        Form{
+            Section(header: Text("Where Are You Going?")){
+                TextField("Location", text: $viewModel.tripData.location )
+                TextField("Location Description", text: $viewModel.tripData.locationDescription)
             }
-            .sheet(isPresented: $displayContactPicker){
-                MultipleContactsPickerView(
-                    onSelectContacts: {selectedContacts in viewModel.selectedContacts = selectedContacts
-                    self.displayContactPicker = false},
-                    onCancel: { self.displayContactPicker = false })
+            Section(header: Text("Who can request items?")){
+                HStack{
+                    if (viewModel.selectedContacts.count > 0) {
+                        List(viewModel.selectedContacts, id: \.phoneNumber) { contact in
+                            Text("\(contact.firstName) \(contact.lastName ?? "")")
+                        }
+                    } else{
+                        Text("No Contacts Selected")
+                    }
+                }
+                Button("Select Contacts"){
+                    displayContactPicker.toggle()
+                }
             }
             
         }
-        
+        .sheet(isPresented: $displayContactPicker){
+            MultipleContactsPickerView(
+                onSelectContacts: {selectedContacts in viewModel.selectedContacts = selectedContacts
+                self.displayContactPicker = false},
+                onCancel: { self.displayContactPicker = false })
+        }
         .toolbar{
             ToolbarItem(placement: .confirmationAction){
                 Button("Create Trip"){
-                    viewModel.createHostedTrip()
-                    dismiss()
+                    Task{
+                        viewModel.createHostedTrip()
+                    }
                 }
                 .disabled(viewModel.tripData.location.isEmpty || viewModel.selectedContacts.isEmpty)
+            }
+        }
+        .onChange(of: viewModel.successfulTripCreation) {
+            if viewModel.successfulTripCreation{
+                onFormSubmit()
+                dismiss()
             }
         }
     }
 }
 
 #Preview {
-    HostTripView()
+    //HostTripView()
 }

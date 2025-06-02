@@ -9,7 +9,7 @@ import Foundation
 import ContactsUI
 
 
-func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]?) async throws /*-> TripInfo*/{
+func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]?) async throws -> Bool{
     let tripData = try JSONEncoder().encode(tripInformation)
     let contactData = try JSONEncoder().encode(contacts)
     
@@ -32,22 +32,12 @@ func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]?) async throw
     
     request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: .fragmentsAllowed)
     
-    let (data,response) = try await URLSession.shared.data(for: request)
+    let (_,response) = try await URLSession.shared.data(for: request)
     
     guard let response = response as? HTTPURLResponse, response.statusCode == 200 else{
         throw TripCreationError.invalidResponse
     }
-    
-    print(data)
-    /*do{
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        let trip: TripInfo =  try decoder.decode(TripInfo.self, from: data)
-        return trip
-    } catch {
-        throw TripCreationError.decodingError
-    }//return the trip that was created*/
-    
+    return true
 }//store trip information in DB
 
 

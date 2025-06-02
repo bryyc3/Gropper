@@ -14,6 +14,7 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
     @Published var selectedContacts: [ContactInfo] = []
     @Published var items: [ItemInfo] = []
     @Published var hostContact = ContactInfo()
+    @Published var successfulTripCreation = false
     
     
     func createHostedTrip(){
@@ -33,7 +34,7 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
     func tripCreation(){
         Task{
             do{
-                try await createTrip(tripInformation: tripData, contacts: selectedContacts)
+                successfulTripCreation = try await createTrip(tripInformation: tripData, contacts: selectedContacts)
             } catch TripCreationError.invalidURL {
                 print ("invalid URL")
             }  catch TripCreationError.invalidResponse {

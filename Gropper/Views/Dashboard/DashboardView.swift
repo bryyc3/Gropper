@@ -14,15 +14,27 @@ struct DashboardView: View {
         NavigationView{
             HStack{
                 NavigationLink("Feeling Generous?"){
-                    HostTripView()
+                    HostTripView(onFormSubmit: {
+                        viewModel.retrieveTrips()})
                 }
                 NavigationLink("Need Something?"){
-                    RequestTripView()
-                }
-                Button("Get Trips"){
-                    viewModel.retrieveTrips()
+                    RequestTripView(onFormSubmit: {
+                        viewModel.retrieveTrips()})
                 }
             }
+        }
+        VStack{
+            if let hostedTrips = viewModel.trips.hostedTripData{
+                ForEach(hostedTrips, id: \.tripId){
+                    hostedTrip in Text(hostedTrip.location)
+                }
+            }
+            else{
+                Text("No hosted trips")
+            }
+        }
+        .onAppear{
+            viewModel.retrieveTrips()
         }
     }
 }

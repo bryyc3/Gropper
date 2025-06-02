@@ -8,10 +8,11 @@
 import Foundation
 
 class DashboardViewModel: ObservableObject {
+    @Published var trips = AllTrips()
     func retrieveTrips(){
         Task{
             do{
-                let trips = try await getTrips()
+                trips = try await getTrips()
                 print(trips)
             } catch TripDataError.invalidURL {
                print ("invalid URL")

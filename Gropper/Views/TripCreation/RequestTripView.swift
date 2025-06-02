@@ -12,6 +12,7 @@ struct RequestTripView: View {
     @StateObject var viewModel = TripCreationViewModel()
     @State private var displayContactPicker = false
     @Environment(\.dismiss) var dismiss
+    var onFormSubmit: () -> Void
     
     var body: some View {
         NavigationView{
@@ -63,10 +64,16 @@ struct RequestTripView: View {
                 .disabled(viewModel.tripData.location.isEmpty || viewModel.hostContact.phoneNumber.isEmpty)
             }
         }
+        .onChange(of: viewModel.successfulTripCreation) {
+            if viewModel.successfulTripCreation{
+                onFormSubmit()
+                dismiss()
+            }
+        }
     }
     
 }
 
 #Preview {
-    RequestTripView()
+    //RequestTripView()
 }

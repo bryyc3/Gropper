@@ -8,6 +8,6 @@
 import Foundation
 
 struct AllTrips: Codable{
-    var hostedTripData: [TripInfo]
-    var requestedTripData: [TripInfo]
+    var hostedTripData: [TripInfo]?
+    var requestedTripData: [TripInfo]?
 }
