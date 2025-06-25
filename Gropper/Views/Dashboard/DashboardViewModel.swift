@@ -17,7 +17,10 @@ class DashboardViewModel: ObservableObject {
             } catch TripDataError.invalidURL {
                print ("invalid URL")
            }  catch TripDataError.invalidResponse {
-               print ("invalid response")
+               /*do{
+                   try await verifyRefresh()
+               }*/
+               
            } catch {
                print ("unexpected error")
            }

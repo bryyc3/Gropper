@@ -12,7 +12,7 @@ import ContactsUI
 func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]?) async throws -> Bool{
     let tripData = try JSONEncoder().encode(tripInformation)
     let contactData = try JSONEncoder().encode(contacts)
-    
+
     guard let tripJsonString = String(data: tripData, encoding: .utf8),
           let contactJsonString = String(data: contactData, encoding: .utf8) else{
         throw TripCreationError.encodingError
@@ -25,6 +25,7 @@ func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]?) async throw
     
     var request = URLRequest(url: url)
     request.httpMethod = "POST"
+    
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
     let body = ["tripInfo": tripJsonString,
@@ -33,10 +34,11 @@ func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]?) async throw
     request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: .fragmentsAllowed)
     
     let (_,response) = try await URLSession.shared.data(for: request)
-    
+   
     guard let response = response as? HTTPURLResponse, response.statusCode == 200 else{
         throw TripCreationError.invalidResponse
     }
+    print(response)
     return true
 }//store trip information in DB
 

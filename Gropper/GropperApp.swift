@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct GropperApp: App {
+    @StateObject var viewModel = AuthenticationViewModel()
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(viewModel)
         }
     }
 }

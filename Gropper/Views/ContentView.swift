@@ -8,14 +8,16 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject var viewModel: AuthenticationViewModel
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        Group{
+            if(viewModel.authenticated){
+                DashboardView()
+            }
+            else{
+                LoginView()
+            }
         }
-        .padding()
     }
 }
 
