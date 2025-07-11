@@ -34,10 +34,13 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
     func tripCreation(){
         Task{
             do{
-                successfulTripCreation = try await createTrip(tripInformation: tripData, contacts: selectedContacts)
-            } catch TripCreationError.invalidURL {
+                let request = try TripData.createTrip(tripInformation: tripData,
+                                                      contacts: selectedContacts,
+                                                      token: getToken(forKey: "accessToken"))
+                successfulTripCreation = try await NetworkManager.shared.execute(endpoint: request, type: Bool.self) ?? false
+            } catch NetworkError.invalidURL {
                 print ("invalid URL")
-            }  catch TripCreationError.invalidResponse {
+            }  catch NetworkError.invalidResponse {
                 print ("invalid response")
             } catch {
                 print ("unexpected error")

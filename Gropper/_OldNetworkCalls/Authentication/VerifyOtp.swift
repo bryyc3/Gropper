@@ -13,12 +13,12 @@ func verifyOtp(mobileNumber: String, otp: String) async throws -> WebTokens{
     
     guard let userNumber = String(data: userPhoneNumber, encoding: .utf8),
           let password = String(data: userCode, encoding: .utf8) else {
-        throw SendOtp.encodingError
+        throw VerifyOtp.encodingError
     }
     
     let endpoint = "http://localhost:8080/simulate-otp-verification"
     guard let url = URL(string: endpoint) else{
-        throw SendOtp.invalidURL
+        throw VerifyOtp.invalidURL
     }
     
     var request = URLRequest(url: url)
@@ -31,9 +31,9 @@ func verifyOtp(mobileNumber: String, otp: String) async throws -> WebTokens{
     request.httpBody = try? JSONSerialization.data(withJSONObject: body, options: .fragmentsAllowed)
  
     let (data, response) = try await URLSession.shared.data(for: request)
-   
+
     guard let response = response as? HTTPURLResponse, response.statusCode == 200 else{
-        throw SendOtp.invalidResponse
+        throw VerifyOtp.invalidResponse
     }
     
     do{
@@ -41,7 +41,7 @@ func verifyOtp(mobileNumber: String, otp: String) async throws -> WebTokens{
         let tokens: WebTokens =  try decoder.decode(WebTokens.self, from: data)
         return tokens
     } catch {
-        throw TripDataError.decodingError
+        throw NetworkError.decodingError
     }
 }
 

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DashboardView: View {
     @StateObject var viewModel = DashboardViewModel()
+    @EnvironmentObject var authVm: AuthenticationViewModel
     
     var body: some View {
         NavigationView{
@@ -22,8 +23,18 @@ struct DashboardView: View {
                         viewModel.retrieveTrips()})
                 }
             }
+            
         }
         VStack{
+            Button("Logout"){
+                Task{
+                    viewModel.removeTokens()
+                    if(try getToken(forKey: "refreshToken") == nil && getToken(forKey: "accessToken") == nil){
+                        authVm.authenticated.toggle()
+                    }
+                    
+                }
+            }
             if let hostedTrips = viewModel.trips.hostedTripData{
                 ForEach(hostedTrips, id: \.tripId){
                     hostedTrip in Text(hostedTrip.location)
@@ -34,12 +45,15 @@ struct DashboardView: View {
             }
         }
         .onAppear{
+            if(!viewModel.loggedIn){
+                authVm.authenticated.toggle()
+            }
             viewModel.retrieveTrips()
         }
     }
 }
 
 
-#Preview {
-    DashboardView()
-}
+//#Preview {
+    //DashboardView()
+//}

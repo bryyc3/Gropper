@@ -9,11 +9,12 @@ import Foundation
 
 @MainActor
 class AuthenticationViewModel: ObservableObject{
+    //@Published var user = UserInfo()
     @Published var phoneNumber = ""
     @Published var otpCode = ""
     @Published var authenticated = false
-    @Published var otpGenerated = false
     @Published var tokens = WebTokens()
+    @Published var otpGenerated = false
     
     init(){
         self.tokens.refreshToken = getToken(forKey: "refreshToken")
@@ -25,12 +26,14 @@ class AuthenticationViewModel: ObservableObject{
     func requestOtp(){
         Task{
             do{
-                otpGenerated = try await sendOtp(mobileNumber: phoneNumber)
-            } catch SendOtp.encodingError{
+                let request = Authentication.sendOtp(mobileNumber: phoneNumber)
+                otpGenerated = try await NetworkManager.shared.execute(endpoint: request, type: Bool.self) ?? false
+                
+            } catch BuildRequestError.encodingError{
                 print("encoding error")
-            } catch SendOtp.invalidURL {
+            } catch NetworkError.invalidURL {
                 print ("invalid URL")
-            } catch SendOtp.invalidResponse {
+            } catch NetworkError.invalidResponse {
                 print ("invalid response")
             } catch {
                 print ("unexpected error")
@@ -41,7 +44,9 @@ class AuthenticationViewModel: ObservableObject{
     func checkOtp(){
         Task{
             do{
-                tokens = try await verifyOtp(mobileNumber: phoneNumber, otp: otpCode)
+                let request = Authentication.verifyOtp(mobileNumber: phoneNumber, otp: otpCode)
+                tokens = try await NetworkManager.shared.execute(endpoint: request, type: WebTokens.self) ?? WebTokens()
+                
                 if let refreshToken = tokens.refreshToken{
                     try storeToken(token: refreshToken, forKey: "refreshToken")
                 }
@@ -49,18 +54,25 @@ class AuthenticationViewModel: ObservableObject{
                     try storeToken(token: accessToken, forKey: "accessToken")
                 }
                 
-            } catch VerifyOtp.encodingError {
+                resetUser()
+            } catch BuildRequestError.encodingError {
                 print("encoding error")
-            } catch VerifyOtp.invalidURL {
+            } catch NetworkError.invalidURL {
                 print ("invalid URL")
-            } catch VerifyOtp.invalidResponse {
+            } catch NetworkError.invalidResponse {
                 print ("invalid response")
-            } catch VerifyOtp.decodingError {
+            } catch NetworkError.decodingError {
                 print ("decoding error")
             } catch {
                 print ("unexpected error")
             }
             authenticated = true
         }
+    }
+    
+    func resetUser(){
+        phoneNumber = ""
+        otpCode = ""
+        otpGenerated = false
     }
 }

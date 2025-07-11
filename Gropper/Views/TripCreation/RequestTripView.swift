@@ -44,7 +44,12 @@ struct RequestTripView: View {
                     }
                 }
                 Button("Add Item"){
-                    viewModel.items.append(ItemInfo(requestor: "1111111111"))
+                    if var items = viewModel.tripData.itemsRequested{
+                        items.append(ItemInfo(requestor: "1111111111"))
+                        viewModel.tripData.itemsRequested = items
+                    } else {
+                        viewModel.tripData.itemsRequested = [ItemInfo(requestor: "1111111111")]
+                    }
                 }
             }
         }
@@ -70,8 +75,4 @@ struct RequestTripView: View {
         }
     }
     
-}
-
-#Preview {
-    //RequestTripView()
 }

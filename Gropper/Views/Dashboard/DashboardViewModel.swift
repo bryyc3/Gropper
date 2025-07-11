@@ -7,23 +7,34 @@
 
 import Foundation
 
+@MainActor
 class DashboardViewModel: ObservableObject {
     @Published var trips = AllTrips()
+    @Published var loggedIn = true
+    
     func retrieveTrips(){
         Task{
             do{
-                trips = try await getTrips()
-                print(trips)
-            } catch TripDataError.invalidURL {
-               print ("invalid URL")
-           }  catch TripDataError.invalidResponse {
-               /*do{
-                   try await verifyRefresh()
-               }*/
-               
-           } catch {
-               print ("unexpected error")
-           }
+                let request = try TripData.getTrips(token: getToken(forKey: "accessToken"))
+                trips = try await NetworkManager.shared.execute(endpoint: request, type: AllTrips.self) ?? AllTrips()
+            } catch NetworkError.invalidURL {
+                print ("invalid URL")
+            } catch NetworkError.invalidResponse {
+                print ("invalid response")
+            } catch {
+                print ("unexpected error")
+            }
+        }
+    }
+    
+    func removeTokens(){
+        Task{
+            do{
+                try deleteToken(forKey: "accessToken")
+                try deleteToken(forKey: "refreshToken")
+            } catch KeychainError.unknown{
+                print("error")
+            }
         }
     }
 }

@@ -43,8 +43,20 @@ func getToken(forKey key: String) -> String? {
     if status == errSecSuccess, let data = dataTypeRef as? Data {
          return String(data: data, encoding: .utf8)
     }
-
     return nil
+}
+
+func deleteToken(forKey key: String) throws {
+    let query: [String: Any] = [
+        kSecClass as String: kSecClassGenericPassword,
+        kSecAttrAccount as String: key
+    ]
+    
+    let status = SecItemDelete(query as CFDictionary)
+    
+    guard status == errSecSuccess else {
+        throw KeychainError.unknown(status)
+    }
 }
 
 enum KeychainError: Error {
