@@ -8,15 +8,22 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var viewModel: AuthenticationViewModel
+    @State var authenticated: Bool = AuthManager.shared.authStatus()
+    
     var body: some View {
         Group{
-            if(viewModel.authenticated){
+            if(authenticated){
                 DashboardView()
             }
             else{
                 LoginView()
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .login)){_ in
+            authenticated = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .logout)){_ in
+            authenticated = false
         }
     }
 }

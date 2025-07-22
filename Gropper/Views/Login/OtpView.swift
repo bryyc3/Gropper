@@ -8,15 +8,15 @@
 import SwiftUI
 
 struct OtpView: View {
-    @EnvironmentObject var viewModel: AuthenticationViewModel
+    @StateObject var otpViewModel: LoginViewModel
     
     var body: some View {
         NavigationView {
             VStack{
-                TextField("Enter OTP", text: $viewModel.otpCode)
+                TextField("Enter OTP", text: $otpViewModel.user.otpCode)
                     .multilineTextAlignment(.center)
                 Button("Login") {
-                    viewModel.checkOtp()
+                    otpViewModel.checkOtp()
                 }
             }
         }
@@ -24,6 +24,6 @@ struct OtpView: View {
     }
 }
 
-#Preview {
-    OtpView()
-}
+//#Preview {
+//    OtpView()
+//}

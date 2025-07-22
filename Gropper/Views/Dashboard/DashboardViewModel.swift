@@ -9,31 +9,24 @@ import Foundation
 
 @MainActor
 class DashboardViewModel: ObservableObject {
-    @Published var trips = AllTrips()
-    @Published var loggedIn = true
+    @Published var trips: AllTrips?
     
     func retrieveTrips(){
         Task{
             do{
-                let request = try TripData.getTrips(token: getToken(forKey: "accessToken"))
-                trips = try await NetworkManager.shared.execute(endpoint: request, type: AllTrips.self) ?? AllTrips()
+                let request = TripData.getTrips()
+                let tripsResponse = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: AllTrips.self)
+                trips = tripsResponse
             } catch NetworkError.invalidURL {
-                print ("invalid URL")
+                print ("Dash invalid URL")
             } catch NetworkError.invalidResponse {
-                print ("invalid response")
+                print ("Dash invalid response")
+            } catch NetworkError.decodingError {
+                print ("Dashboard decoding error")
+            } catch NetworkError.unauthorized {
+                AuthManager.shared.logout()
             } catch {
-                print ("unexpected error")
-            }
-        }
-    }
-    
-    func removeTokens(){
-        Task{
-            do{
-                try deleteToken(forKey: "accessToken")
-                try deleteToken(forKey: "refreshToken")
-            } catch KeychainError.unknown{
-                print("error")
+                print ("Dash unexpected error")
             }
         }
     }

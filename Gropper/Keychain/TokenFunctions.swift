@@ -8,7 +8,7 @@
 import Foundation
 import Security
 
-func storeToken(token: String, forKey key: String) throws{
+func storeToken(token: String, forKey key: String) throws {
     if let data = token.data(using: .utf8) {
            let query: [String: Any] = [
                kSecClass as String: kSecClassGenericPassword,
@@ -46,6 +46,25 @@ func getToken(forKey key: String) -> String? {
     return nil
 }
 
+func updateToken(token: String, forKey key: String) throws {
+    let query: [String: Any] = [
+        kSecClass as String: kSecClassGenericPassword,
+        kSecAttrAccount as String: key
+    ]
+    
+    let attributes: [String: Any] = [kSecValueData as String: token.data(using: .utf8)!]
+    let status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
+    
+    guard status != errSecItemNotFound else {
+        print("item not found")
+        throw KeychainError.itemNotFound
+    }
+    guard status == errSecSuccess else {
+        print(status)
+        throw KeychainError.unknown(status)
+    }
+}
+
 func deleteToken(forKey key: String) throws {
     let query: [String: Any] = [
         kSecClass as String: kSecClassGenericPassword,
@@ -61,5 +80,6 @@ func deleteToken(forKey key: String) throws {
 
 enum KeychainError: Error {
         case duplicateEntry
+        case itemNotFound
         case unknown(OSStatus)
-    }
+}

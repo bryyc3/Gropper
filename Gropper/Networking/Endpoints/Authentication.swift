@@ -11,7 +11,7 @@ struct Authentication: Endpoint {
     var baseUrl: URL
     var path: String
     var method: HttpMethod
-    var headers: [String : String]
+    var headers: [String : String]?
     var body: [String : Encodable]?
     
     static func sendOtp(mobileNumber: String) -> Authentication {
@@ -35,7 +35,12 @@ struct Authentication: Endpoint {
         )
     }
     
-    static func verifyRefreshToken(){
-        
+    static func verifyRefreshToken(token: String) -> Authentication {
+        return Authentication(
+            baseUrl: URL(string: "http://localhost:8080/")!,
+            path: "verify-refresh",
+            method: .post,
+            headers: ["Authorization": token]
+        )
     }
 }

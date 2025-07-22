@@ -13,6 +13,9 @@ enum BuildRequestError: Error{
 
 enum NetworkError: Error{
     case invalidURL
+    case noResponse
     case invalidResponse
     case decodingError
+    case unauthorized
+    case noAccessToken
 }

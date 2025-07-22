@@ -8,8 +8,8 @@
 import Foundation
 import ContactsUI
 import SwiftUI
-
-class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate{
+@MainActor
+class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate {
     @Published var tripData = TripInfo()
     @Published var selectedContacts: [ContactInfo] = []
     @Published var items: [ItemInfo] = []
@@ -17,33 +17,40 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
     @Published var successfulTripCreation = false
     
     
-    func createHostedTrip(){
+    func createHostedTrip() {
         tripData.status = 1
         tripData.host = "1111111111"
         tripData.tripId = UUID().uuidString
         tripCreation()
     }//create trip
     
-    func requestTrip(){
+    func requestTrip() {
         tripData.host = hostContact.phoneNumber
         tripData.itemsRequested = items
         tripData.tripId = UUID().uuidString
         tripCreation()
     }//request trip
     
-    func tripCreation(){
+    func tripCreation() {
         Task{
             do{
-                let request = try TripData.createTrip(tripInformation: tripData,
-                                                      contacts: selectedContacts,
-                                                      token: getToken(forKey: "accessToken"))
-                successfulTripCreation = try await NetworkManager.shared.execute(endpoint: request, type: Bool.self) ?? false
+                let request = TripData.createTrip(tripInformation: tripData, contacts: selectedContacts)
+                guard let tripCreated = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else {
+                    throw NetworkError.invalidResponse
+                }
+                if (tripCreated) {
+                    successfulTripCreation = tripCreated
+                } else {
+                    print ("couldnt create trip")
+                }
             } catch NetworkError.invalidURL {
-                print ("invalid URL")
-            }  catch NetworkError.invalidResponse {
-                print ("invalid response")
+                print ("create trip invalid URL")
+            } catch NetworkError.invalidResponse {
+                print ("create trip invalid response")
+            } catch NetworkError.unauthorized{
+                AuthManager.shared.logout()
             } catch {
-                print ("unexpected error")
+                print ("create trip unexpected error")
             }
          }
     }

@@ -8,23 +8,23 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject var viewModel: AuthenticationViewModel
+    @StateObject var loginViewModel = LoginViewModel()
     
     var body: some View {
-        if(!viewModel.otpGenerated){
+        if(!loginViewModel.user.otpGenerated){
             NavigationView {
                 VStack{
-                    TextField("Enter Your Phone Number", text: $viewModel.phoneNumber)
+                    TextField("Enter Your Phone Number", text: $loginViewModel.user.phoneNumber)
                         .multilineTextAlignment(.center)
                     Button("Get Otp"){
-                        viewModel.requestOtp()
+                        loginViewModel.requestOtp()
                     }
                 }
             }
 
         }
         else{
-            OtpView()
+            OtpView(otpViewModel: loginViewModel)
         }
     }
 }
