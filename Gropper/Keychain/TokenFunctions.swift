@@ -8,8 +8,8 @@
 import Foundation
 import Security
 
-func storeToken(token: String, forKey key: String) throws {
-    if let data = token.data(using: .utf8) {
+func storeItem(item: String, forKey key: String) throws {
+    if let data = item.data(using: .utf8) {
            let query: [String: Any] = [
                kSecClass as String: kSecClassGenericPassword,
                kSecAttrAccount as String: key,
@@ -29,7 +29,7 @@ func storeToken(token: String, forKey key: String) throws {
     }
 }
 
-func getToken(forKey key: String) -> String? {
+func getItem(forKey key: String) -> String? {
     let query: [String: Any] = [
         kSecClass as String: kSecClassGenericPassword,
         kSecAttrAccount as String: key,
@@ -46,13 +46,13 @@ func getToken(forKey key: String) -> String? {
     return nil
 }
 
-func updateToken(token: String, forKey key: String) throws {
+func updateItem(item: String, forKey key: String) throws {
     let query: [String: Any] = [
         kSecClass as String: kSecClassGenericPassword,
         kSecAttrAccount as String: key
     ]
     
-    let attributes: [String: Any] = [kSecValueData as String: token.data(using: .utf8)!]
+    let attributes: [String: Any] = [kSecValueData as String: item.data(using: .utf8)!]
     let status = SecItemUpdate(query as CFDictionary, attributes as CFDictionary)
     
     guard status != errSecItemNotFound else {

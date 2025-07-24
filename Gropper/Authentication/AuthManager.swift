@@ -6,26 +6,28 @@
 //
 
 import Foundation
-
+@MainActor
 class AuthManager {
     static let shared = AuthManager()
     
     private let accessTokenKey = "accessToken"
     private let refreshTokenKey = "refreshToken"
+    private let userPhone = "userPhoneNumber"
     
     
     func authStatus() -> Bool{
-        guard getToken(forKey: "refreshToken") != nil else {
+        guard getItem(forKey: refreshTokenKey) != nil else {
             return false
         }
         return true
     }
     
-    func login(accessToken: String, refreshToken: String) {
+    func login(accessToken: String, refreshToken: String, phoneNumber: String) {
         Task{
             do{
-                try storeToken(token: accessToken, forKey: accessTokenKey)
-                try storeToken(token: refreshToken, forKey: refreshTokenKey)
+                try storeItem(item: accessToken, forKey: accessTokenKey)
+                try storeItem(item: refreshToken, forKey: refreshTokenKey)
+                try storeItem(item: phoneNumber, forKey: userPhone)
             } catch KeychainError.unknown{
                 print("Keychain error")
             }

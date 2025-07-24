@@ -15,7 +15,7 @@ class NetworkManager {
         var request = try endpoint.urlRequest()
 
         if (auth) {
-            guard let accessToken = getToken(forKey: "accessToken") else {
+            guard let accessToken = getItem(forKey: "accessToken") else {
                 throw NetworkError.noAccessToken
             }
             request.setValue(accessToken, forHTTPHeaderField: "Authorization")
@@ -37,7 +37,7 @@ class NetworkManager {
                 }//decode data from response
             
             case 401:
-                guard let refreshToken = getToken(forKey: "refreshToken") else {
+                guard let refreshToken = getItem(forKey: "refreshToken") else {
                     throw NetworkError.unauthorized
                 }
                 let request = Authentication.verifyRefreshToken(token: refreshToken)
@@ -48,7 +48,7 @@ class NetworkManager {
                     guard let accessToken = tokens.accessToken else {
                         throw NetworkError.unauthorized
                     }
-                    try updateToken(token: accessToken, forKey: "accessToken")
+                    try updateItem(item: accessToken, forKey: "accessToken")
                     return try await self.execute(endpoint: endpoint, auth: true, type: type)
                 }//get new access token and store it in Keychain
             

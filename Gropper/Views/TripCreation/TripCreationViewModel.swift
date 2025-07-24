@@ -10,23 +10,32 @@ import ContactsUI
 import SwiftUI
 @MainActor
 class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate {
+    let userNumber: String
     @Published var tripData = TripInfo()
     @Published var selectedContacts: [ContactInfo] = []
     @Published var items: [ItemInfo] = []
     @Published var hostContact = ContactInfo()
     @Published var successfulTripCreation = false
-    
+     
+    override init(){
+        guard let phoneNumber = getItem(forKey: "userPhoneNumber") else {
+            AuthManager.shared.logout()
+            userNumber = ""
+            return
+        }
+        userNumber = phoneNumber
+    }
     
     func createHostedTrip() {
         tripData.status = 1
-        tripData.host = "1111111111"
+        tripData.host = userNumber
         tripData.tripId = UUID().uuidString
         tripCreation()
     }//create trip
     
     func requestTrip() {
         tripData.host = hostContact.phoneNumber
-        tripData.itemsRequested = items
+        tripData.requestors.append(RequestorInfo(phoneNumber: userNumber, itemsRequested: items))
         tripData.tripId = UUID().uuidString
         tripCreation()
     }//request trip

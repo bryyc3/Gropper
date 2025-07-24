@@ -37,7 +37,7 @@ class LoginViewModel: ObservableObject{
                 guard let accessToken = tokens.accessToken, let refreshToken = tokens.refreshToken else {
                     throw NetworkError.decodingError
                 }
-                AuthManager.shared.login(accessToken: accessToken, refreshToken: refreshToken)
+                AuthManager.shared.login(accessToken: accessToken, refreshToken: refreshToken, phoneNumber: user.phoneNumber)
                 resetUser()
             } catch BuildRequestError.encodingError {
                 print("Auth encoding error")

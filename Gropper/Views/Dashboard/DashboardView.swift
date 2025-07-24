@@ -24,16 +24,16 @@ struct DashboardView: View {
             }
             
         }
-        VStack{
-            if let hostedTrips = viewModel.trips.hostedTripData{
-                ForEach(hostedTrips, id: \.tripId){
-                    hostedTrip in Text(hostedTrip.location)
-                }
-            }
-            else{
-                Text("No hosted trips")
-            }
-        }
+//        VStack{
+//            if let hostedTrips = viewModel.trips.hostedTripData{
+//                ForEach(hostedTrips, id: \.tripId){
+//                    hostedTrip in Text(hostedTrip.location)
+//                }
+//            }
+//            else{
+//                Text("No hosted trips")
+//            }
+//        }
         .onAppear{
             viewModel.retrieveTrips()
         }
