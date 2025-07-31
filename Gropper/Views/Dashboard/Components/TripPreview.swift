@@ -8,28 +8,16 @@
 import SwiftUI
 
 struct TripPreview: View {
-    let tripType: tripType
-    var tripData: TripInfo?
+    var tripData: TripInfo
     
     var body: some View {
-        VStack{
-            if let trip = tripData {
-                Text(tripType.rawValue)
-                Text(/*trip.location*/ "Test Location")
-                //requestor card
-            } else {
-                Text("No Trips Found")
-            }
-           
+        Text(/*trip.location*/ "Test Location")
+        LazyHStack{
+            RequestorCard(requestor: tripData.requestors[0])
         }
     }
 }
 
-enum tripType: String{
-    case hosted = "Hosted Trips"
-    case requested = "Requested Trips"
-}
-
 #Preview {
-    TripPreview(tripType: .hosted, tripData: TripInfo())
+    TripPreview(tripData: TripInfo())
 }

@@ -15,6 +15,7 @@ struct OtpView: View {
             VStack{
                 TextField("Enter OTP", text: $otpViewModel.user.otpCode)
                     .multilineTextAlignment(.center)
+                    .textInputAutocapitalization(.never)
                 Button("Login") {
                     otpViewModel.checkOtp()
                 }

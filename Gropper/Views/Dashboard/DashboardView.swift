@@ -24,16 +24,28 @@ struct DashboardView: View {
             }
             
         }
-//        VStack{
-//            if let hostedTrips = viewModel.trips.hostedTripData{
-//                ForEach(hostedTrips, id: \.tripId){
-//                    hostedTrip in Text(hostedTrip.location)
-//                }
-//            }
-//            else{
-//                Text("No hosted trips")
-//            }
-//        }
+        VStack{
+            Text("Trips Youre Hosting")
+            ZStack{
+                if let hostedTrips = viewModel.hostedTrips{
+                    List(hostedTrips, id: \.self.tripId){ trip in
+                        TripPreview(tripData: trip)
+                    }
+                }
+                
+            }
+            
+            Text("Trips Youre Apart Of")
+            ZStack{
+                if let requestedTrips = viewModel.requestedTrips{
+                    List(requestedTrips, id: \.self.tripId){ trip in
+                        TripPreview(tripData: trip)
+                    }
+                }
+                
+            }
+        }
+        .environmentObject(viewModel)
         .onAppear{
             viewModel.retrieveTrips()
         }

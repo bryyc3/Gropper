@@ -25,11 +25,13 @@ struct TripData: Endpoint {
         )
     }
     
-    static func getTrips() -> TripData {
+    static func getTrips(user: String) -> TripData {
         return TripData(
             baseUrl: URL(string: "http://localhost:8080/")!,
             path: "trips",
-            method: .get
+            method: .post,
+            headers: ["Content-Type": "application/json"],
+            body: ["user": user]
         )
     }
 }

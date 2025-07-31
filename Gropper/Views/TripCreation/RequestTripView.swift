@@ -57,7 +57,10 @@ struct RequestTripView: View {
             ToolbarItem(placement: .confirmationAction){
                 Button("Create Trip"){
                     viewModel.requestTrip()
-                    dismiss()
+                    if viewModel.successfulTripCreation{
+                        onFormSubmit()
+                        dismiss()
+                    }
                 }
                 .disabled(viewModel.tripData.location.isEmpty || viewModel.hostContact.phoneNumber.isEmpty)
             }

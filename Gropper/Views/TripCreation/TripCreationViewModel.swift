@@ -13,7 +13,7 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
     let userNumber: String
     @Published var tripData = TripInfo()
     @Published var selectedContacts: [ContactInfo] = []
-    @Published var items: [ItemInfo] = []
+    @Published var items: [ItemInfo] = [ItemInfo()]
     @Published var hostContact = ContactInfo()
     @Published var successfulTripCreation = false
      

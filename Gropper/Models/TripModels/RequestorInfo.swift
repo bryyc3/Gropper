@@ -10,4 +10,12 @@ import Foundation
 struct RequestorInfo: Codable {
     var phoneNumber: String
     var itemsRequested: [ItemInfo]
+    
+    var contactName: String?
+    var contactPhoto: Data?
+    
+    enum CodingKeys: CodingKey {
+            case phoneNumber
+            case itemsRequested
+    }
 }

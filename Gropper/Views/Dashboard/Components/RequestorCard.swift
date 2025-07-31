@@ -8,19 +8,37 @@
 import SwiftUI
 
 struct RequestorCard: View {
-    //let items: ItemInfo
+    @EnvironmentObject var model: DashboardViewModel
+    @State var requestor: RequestorInfo
     var body: some View {
         HStack{
-            Image("contact_image")
-            Text("contact_name")
+            if let imageData = requestor.contactPhoto, let contactPhoto = UIImage(data: imageData){
+                Image(uiImage: contactPhoto)
+            } else {
+                Text("No image")
+            }
+            
+            if let contactName = requestor.contactName{
+                Text(contactName)
+            } else {
+                Text(requestor.phoneNumber)
+            }
         }
         HStack {
-            //item
-            //checked off
+            if(requestor.itemsRequested.count > 0){
+                List(requestor.itemsRequested){ item in
+                    Text(item.itemName)
+                }
+            }
+        }
+        .onAppear {
+            Task{
+                requestor = await model.retrieveContact(user: requestor)
+            }
         }
     }
 }
 
 #Preview {
-    RequestorCard()
+    //RequestorCard()
 }
