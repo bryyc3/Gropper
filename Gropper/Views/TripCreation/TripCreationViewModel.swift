@@ -16,6 +16,7 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
     @Published var items: [ItemInfo] = [ItemInfo()]
     @Published var hostContact = ContactInfo()
     @Published var successfulTripCreation = false
+    @Published var displayContactPicker = false
      
     override init(){
         guard let phoneNumber = getItem(forKey: "userPhoneNumber") else {

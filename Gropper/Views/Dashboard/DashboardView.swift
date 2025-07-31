@@ -14,11 +14,11 @@ struct DashboardView: View {
         NavigationView{
             HStack{
                 NavigationLink("Feeling Generous?"){
-                    HostTripView(onFormSubmit: {
+                    TripCreationView(formType: .host, onFormSubmit: {
                         viewModel.retrieveTrips()})
                 }
                 NavigationLink("Need Something?"){
-                    RequestTripView(onFormSubmit: {
+                    TripCreationView(formType: .request, onFormSubmit: {
                         viewModel.retrieveTrips()})
                 }
             }
