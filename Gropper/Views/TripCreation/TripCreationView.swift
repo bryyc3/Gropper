@@ -10,7 +10,7 @@ import SwiftUI
 struct TripCreationView: View {
     let formType: TripCreationType
     @StateObject var viewModel = TripCreationViewModel()
-    @State var isFormValid: Bool = false
+    @State private var displayContactPicker = false
     @Environment(\.dismiss) var dismiss
     var onFormSubmit: () -> Void
     
@@ -46,7 +46,7 @@ struct TripCreationView: View {
                 }
                 
                 Button(action:{
-                    viewModel.displayContactPicker.toggle()
+                    displayContactPicker.toggle()
                 }){
                     if(formType == .host){Text("Select Contacts")}
                     if(formType == .request){Text("Select Contact")}
@@ -75,6 +75,22 @@ struct TripCreationView: View {
                 }
             }
         }
+        .sheet(isPresented: $displayContactPicker){
+            if (formType == .host) {
+                MultipleContactsPickerView(onSelectContacts: {
+                        selectedContacts in viewModel.selectedContacts = selectedContacts
+                        self.displayContactPicker = false},
+                        onCancel: { self.displayContactPicker = false })
+            }
+            
+            if (formType == .request) {
+                ContactPickerView(onSelectContact: {
+                    hostContact in viewModel.hostContact = hostContact
+                    self.displayContactPicker = false},
+                    onCancel: { self.displayContactPicker = false })
+            }
+        }
+                    
         .toolbar{
             ToolbarItem(placement: .confirmationAction){
                 Button("Create Trip"){
@@ -83,28 +99,24 @@ struct TripCreationView: View {
                         if(formType == .request){viewModel.requestTrip()}
                     }
                 }
-                .disabled(!isFormValid)
-            }
-        }
-        .onChange(of: viewModel.successfulTripCreation) {
-            if viewModel.successfulTripCreation{
-                onFormSubmit()
-                dismiss()
+                .disabled(!canSubmit)
+                .onChange(of: viewModel.successfulTripCreation) {
+                    if viewModel.successfulTripCreation{
+                        onFormSubmit()
+                        dismiss()
+                    }
+                }
             }
         }
     }
     
-    private func formValidityCheck() {
-        if(formType == .host){
-            isFormValid = !viewModel.tripData.location.isEmpty &&
-                          !viewModel.selectedContacts.isEmpty
+    var canSubmit: Bool {
+        switch formType {
+        case .host:
+            return !viewModel.tripData.location.isEmpty && !viewModel.selectedContacts.isEmpty
+        case .request:
+            return !viewModel.tripData.location.isEmpty && !viewModel.hostContact.phoneNumber.isEmpty
         }
-        
-        if(formType == .request){
-            isFormValid = !viewModel.tripData.location.isEmpty &&
-                          !viewModel.hostContact.phoneNumber.isEmpty
-        }
-        
     }
 }
 
