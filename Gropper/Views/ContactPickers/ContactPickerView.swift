@@ -15,7 +15,6 @@ struct ContactPickerView: UIViewControllerRepresentable {
     class Coordinator: NSObject, CNContactPickerDelegate {
         var parent: ContactPickerView
         var contactInfo = ContactInfo()
-        var contactsArray: [ContactInfo] = []
         
         init(parent: ContactPickerView){
             self.parent = parent
@@ -24,7 +23,7 @@ struct ContactPickerView: UIViewControllerRepresentable {
             contactInfo.firstName = contact.givenName
             contactInfo.lastName = contact.familyName
             contactInfo.phoneNumber = contact.phoneNumbers.first?.value.stringValue ?? ""
-            self.parent.onSelectContact(contactInfo)
+            parent.onSelectContact(contactInfo)
         }
         
     }

@@ -12,43 +12,46 @@ struct DashboardView: View {
     
     var body: some View {
         NavigationView{
-            HStack{
-                NavigationLink("Feeling Generous?"){
-                    TripCreationView(formType: .host, onFormSubmit: {
-                        viewModel.retrieveTrips()})
+            VStack{
+                VStack(spacing: -10){
+                    HStack{
+                        Text("Feeling Generous?")
+                            .padding(.leading, 15)
+                        Spacer()
+                        Text("Need Something?")
+                            .padding(.trailing, 15)
+                            
+                    }
+                    .padding()
+                    .foregroundColor(Color(#colorLiteral(red: 0.487426579, green: 0.3103705347, blue: 0.853105247, alpha: 1)))
+                    .font(.system(size: 15, weight: .bold))
+                    
+                    
+                    ScrollView(.horizontal){
+                        HStack{
+                            CreateTripNav(destination: .host)
+                                .containerRelativeFrame(.horizontal, count: 1, spacing: 0)
+                            CreateTripNav(destination: .request)
+                                .containerRelativeFrame(.horizontal, count: 1, spacing: 0)
+                        }
+                        .scrollTargetLayout()
+                        
+                    }
+                    .contentMargins(10, for: .scrollContent)
+                    .scrollTargetBehavior(.viewAligned)
                 }
-                NavigationLink("Need Something?"){
-                    TripCreationView(formType: .request, onFormSubmit: {
-                        viewModel.retrieveTrips()})
-                }
+                .background(RoundedRectangle(cornerRadius: 25)
+                    .fill(Gradient(colors: [Color(#colorLiteral(red: 0.7062481642, green: 0.8070108294, blue: 0.9882084727, alpha: 1)),Color(#colorLiteral(red: 0.5758828521, green: 0.4828243852, blue: 0.8095962405, alpha: 1))])))
+                
+                TripPreview(previewType: .host)
+                TripPreview(previewType: .request)
             }
+            .padding()
             
         }
-        VStack{
-            Text("Trips Youre Hosting")
-            ZStack{
-                if let hostedTrips = viewModel.hostedTrips{
-                    List(hostedTrips, id: \.self.tripId){ trip in
-                        TripPreview(tripData: trip)
-                    }
-                }
-                
-            }
-            
-            Text("Trips Youre Apart Of")
-            ZStack{
-                if let requestedTrips = viewModel.requestedTrips{
-                    List(requestedTrips, id: \.self.tripId){ trip in
-                        TripPreview(tripData: trip)
-                    }
-                }
-                
-            }
-        }
+        
         .environmentObject(viewModel)
-        .onAppear{
-            viewModel.retrieveTrips()
-        }
+        .onAppear{viewModel.retrieveTrips()}
     }
 }
 

@@ -73,3 +73,53 @@ class DashboardViewModel: ObservableObject {
         }
     }
 }
+
+enum TripType {
+    case host
+    case request
+    
+    var createTripButtonTitle: String {
+        switch self {
+            case .host:
+                return "Create Trip"
+            case .request:
+                return "Request Trip"
+        }
+    }
+    
+    var createTripImage: String {
+        switch self {
+            case .host:
+                return "host_trip_img"
+            case .request:
+                return "request_trip_img"
+        }
+    }
+    
+    var createTripTitle: String {
+        switch self {
+        case .host:
+            return "Heading out and willing to pick up items"
+        case .request:
+            return "Request someone to pick up items for you"
+        }
+    }
+    
+    var createTripSubtitle: String {
+        switch self {
+        case .host:
+            return "Let others know where youre going and that you can pick up items needed"
+        case .request:
+            return "Request for someone to pick up items you need from a specified location."
+        }
+    }
+    
+    var tripPreviewTitle: String {
+        switch self {
+            case .host:
+                return "Trips Youre Hosting"
+            case .request:
+                return "Trips Youre Apart Of"
+        }
+    }
+}

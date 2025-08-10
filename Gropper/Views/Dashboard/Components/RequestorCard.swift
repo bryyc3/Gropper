@@ -10,19 +10,12 @@ import SwiftUI
 struct RequestorCard: View {
     @EnvironmentObject var model: DashboardViewModel
     @State var requestor: RequestorInfo
+    
     var body: some View {
         HStack{
-            if let imageData = requestor.contactPhoto, let contactPhoto = UIImage(data: imageData){
-                Image(uiImage: contactPhoto)
-            } else {
-                Text("No image")
-            }
-            
-            if let contactName = requestor.contactName{
-                Text(contactName)
-            } else {
-                Text(requestor.phoneNumber)
-            }
+            Image(uiImage: imageData(info: requestor.contactPhoto))
+
+            Text(requestor.contactName ?? requestor.phoneNumber)
         }
         HStack {
             if(requestor.itemsRequested.count > 0){
@@ -36,6 +29,14 @@ struct RequestorCard: View {
                 requestor = await model.retrieveContact(user: requestor)
             }
         }
+    }
+}
+
+func imageData(info: Data?) -> UIImage{
+    if let imageData = info, let contactPhoto = UIImage(data: imageData){
+        return contactPhoto
+    } else {
+        return UIImage(systemName: "person.circle")!
     }
 }
 

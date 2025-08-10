@@ -8,16 +8,24 @@
 import SwiftUI
 
 struct TripPreview: View {
-    var tripData: TripInfo
+    @EnvironmentObject var model: DashboardViewModel
+    let previewType: TripType
     
     var body: some View {
-        Text(/*trip.location*/ "Test Location")
-        LazyHStack{
-            RequestorCard(requestor: tripData.requestors[0])
+        Text(previewType.tripPreviewTitle)
+        ZStack{
+            Text(/*trip.location*/ "Test Location")
+            if previewType == .host{
+                if let hostedTrips = model.hostedTrips{
+                    List(hostedTrips, id: \.self.tripId){trip in
+                        LazyHStack{RequestorCard(requestor: trip.requestors[0])}
+                    }
+                }
+            }
         }
     }
 }
 
 #Preview {
-    TripPreview(tripData: TripInfo())
+    //TripPreview(tripData: TripInfo())
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TripCreationView: View {
-    let formType: TripCreationType
+    let formType: TripType
     @StateObject var viewModel = TripCreationViewModel()
     @State private var displayContactPicker = false
     @Environment(\.dismiss) var dismiss
@@ -20,8 +20,7 @@ struct TripCreationView: View {
                 TextField("Location", text: $viewModel.tripData.location )
                 TextField("Location Description", text: $viewModel.tripData.locationDescription)
             } header: {
-                if (formType == .host) {Text("Where Are You Going?")}
-                if (formType == .request) {Text("Where Do You need Items From?")}
+                Text(locationHeader)
             }
         
             Section{
@@ -43,17 +42,15 @@ struct TripCreationView: View {
                     } else{
                         Text("\(viewModel.hostContact.firstName) \(viewModel.hostContact.lastName ?? "")")
                     }
-                }
+            }
                 
-                Button(action:{
-                    displayContactPicker.toggle()
-                }){
-                    if(formType == .host){Text("Select Contacts")}
-                    if(formType == .request){Text("Select Contact")}
-                }
+            Button(action:{
+                displayContactPicker.toggle()
+            }){
+                Text("Select \(contactPlural)")
+            }
             } header: {
-                if(formType == .host){Text("Who can request items?")}
-                if(formType == .request){Text("Who's The Request For?")}
+                Text(selectContactText)
             }
 
             if (formType == .request) {
@@ -118,12 +115,35 @@ struct TripCreationView: View {
             return !viewModel.tripData.location.isEmpty && !viewModel.hostContact.phoneNumber.isEmpty
         }
     }
+    
+    var locationHeader: String {
+        switch formType {
+            case .host:
+                return "Where Are You Going?"
+            case .request:
+                return "Where Do You need Items From?"
+        }
+    }
+    
+    var contactPlural: String {
+        switch formType {
+            case .host:
+                return "Contacts"
+            case .request:
+                return "Contact"
+        }
+    }
+    
+    var selectContactText: String {
+        switch formType {
+            case .host:
+                return "Who can request items?"
+            case .request:
+                return "Who's The Request For?"
+        }
+    }
 }
 
-enum TripCreationType {
-    case host
-    case request
-}
 
 #Preview {
     //TripCreation()
