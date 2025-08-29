@@ -10,22 +10,48 @@ import SwiftUI
 struct TripPreview: View {
     @EnvironmentObject var model: DashboardViewModel
     let previewType: TripType
+    let tripData: [TripInfo]?
     
     var body: some View {
-        Text(previewType.tripPreviewTitle)
-        ZStack{
-            Text(/*trip.location*/ "Test Location")
-            if previewType == .host{
-                if let hostedTrips = model.hostedTrips{
-                    List(hostedTrips, id: \.self.tripId){trip in
-                        LazyHStack{RequestorCard(requestor: trip.requestors[0])}
+        VStack{
+            Text(previewType.tripPreviewTitle)
+                .font(.system(size: 20))
+                .fontWeight(.bold)
+                .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+            
+            if let tripArray = tripData{
+                if previewType == .host{
+                    StackedTripCards(trips: tripArray, colorScheme: previewType.colorScheme)
+                }
+                
+                if previewType == .request{
+                    LazyHStack{
+                        ForEach(tripArray, id: \.self.tripId) { trip in
+                            VStack{
+                                Text(trip.location)
+                            }
+                            .frame(height: 200)
+                        }
                     }
+                    .background(RoundedRectangle(cornerRadius: 25)
+                        .fill(Gradient(colors: previewType.colorScheme)))
+                    .padding()
                 }
             }
+            else {
+                VStack{
+                    Text("Nothing Here Yet!")
+                        .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
+                        .font(.system(size: 15))
+                        .fontWeight(.semibold)
+                }
+                
+            }
         }
+        .padding()
     }
 }
 
 #Preview {
-    //TripPreview(tripData: TripInfo())
+    TripPreview(previewType: .host, tripData: [TripInfo(requestors: [RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]), TripInfo(requestors: [RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]),TripInfo(requestors: [RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), RequestorInfo(phoneNumber: "6", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])])])
 }

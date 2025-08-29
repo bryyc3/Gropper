@@ -9,6 +9,7 @@ import Foundation
 
 
 struct TripInfo: Codable{
+    var id = UUID()
     var tripId: String?
     var host: String = ""
     var status: Int?
@@ -18,4 +19,15 @@ struct TripInfo: Codable{
     var time: String?
     
     var requestors: [RequestorInfo] = []
+    
+    enum CodingKeys: String, CodingKey {
+        case tripId
+        case host
+        case status
+        case location
+        case locationDescription
+        case date
+        case time
+        case requestors
+    }
 }

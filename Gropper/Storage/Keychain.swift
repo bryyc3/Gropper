@@ -43,7 +43,9 @@ func getItem(forKey key: String) -> String? {
     if status == errSecSuccess, let data = dataTypeRef as? Data {
          return String(data: data, encoding: .utf8)
     }
-    return nil
+    else {
+        return nil
+    }
 }
 
 func updateItem(item: String, forKey key: String) throws {

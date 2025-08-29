@@ -16,14 +16,11 @@ struct CreateTripNav: View {
             HStack{
                 VStack(alignment: .leading){
                     Text(destination.createTripTitle)
-                        .font(.system(size: 17, weight: .semibold))
-                        .frame(width: 185)
+                        .font(.system(size: 22, weight: .semibold))
                         .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
         
                     Text(destination.createTripSubtitle)
-                        .font(.system(size: 13))
-                        .frame(width: 240)
-                        //.background(.black)
+                        .font(.system(size: 15))
                         .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -35,12 +32,11 @@ struct CreateTripNav: View {
                     .frame(width: 80, height: 80)
                     
             }
-            .frame(width: 200, height: 100)
             NavigationLink {
                 TripCreationView(formType: destination, onFormSubmit: {model.retrieveTrips()})
             } label: {
                 Text(destination.createTripButtonTitle)
-                    .font(.system(size: 10, weight: .semibold))
+                    .font(.system(size: 15, weight: .semibold))
                     .padding(.horizontal, 65)
                     .padding(.vertical, 5)
             }

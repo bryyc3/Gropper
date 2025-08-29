@@ -7,6 +7,7 @@
 
 import Foundation
 import Contacts
+import SwiftUI
 
 @MainActor
 class DashboardViewModel: ObservableObject {
@@ -108,7 +109,7 @@ enum TripType {
     var createTripSubtitle: String {
         switch self {
         case .host:
-            return "Let others know where youre going and that you can pick up items needed"
+            return "Let others know where youre going and that you can pick up items they need"
         case .request:
             return "Request for someone to pick up items you need from a specified location."
         }
@@ -120,6 +121,15 @@ enum TripType {
                 return "Trips Youre Hosting"
             case .request:
                 return "Trips Youre Apart Of"
+        }
+    }
+    
+    var colorScheme: [Color] {
+        switch self {
+            case .host:
+            return [Color(#colorLiteral(red: 0.8416427374, green: 0.8715619445, blue: 0.9481450915, alpha: 1)),Color(#colorLiteral(red: 0.5456431508, green: 0.6622825265, blue: 0.8428704143, alpha: 0.8952555878))]
+        case .request:
+            return [Color(#colorLiteral(red: 0.8366934657, green: 0.7335241437, blue: 0.8978629708, alpha: 1)),Color(#colorLiteral(red: 0.6828602552, green: 0.4983463287, blue: 0.9405499697, alpha: 1))]
         }
     }
 }

@@ -12,12 +12,12 @@ struct ContentView: View {
     
     var body: some View {
         Group{
-//            if(authenticated){
+            if(authenticated){
               DashboardView()
-//            }
-//            else{
-//                LoginView()
-//            }
+            }
+            else{
+                LoginView()
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: .login)){_ in
             authenticated = true
