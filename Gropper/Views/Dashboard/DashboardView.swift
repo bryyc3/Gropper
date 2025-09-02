@@ -50,7 +50,6 @@ struct DashboardView: View {
             }
             .padding()
         }
-        
         .environmentObject(viewModel)
         .onAppear{viewModel.retrieveTrips()}
     }

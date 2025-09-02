@@ -127,7 +127,7 @@ enum TripType {
     var colorScheme: [Color] {
         switch self {
             case .host:
-            return [Color(#colorLiteral(red: 0.8416427374, green: 0.8715619445, blue: 0.9481450915, alpha: 1)),Color(#colorLiteral(red: 0.5456431508, green: 0.6622825265, blue: 0.8428704143, alpha: 0.8952555878))]
+            return [Color(#colorLiteral(red: 0.8416427374, green: 0.8715619445, blue: 0.9481450915, alpha: 1)),Color(#colorLiteral(red: 0.5456431508, green: 0.6622825265, blue: 0.8428704143, alpha: 1))]
         case .request:
             return [Color(#colorLiteral(red: 0.8366934657, green: 0.7335241437, blue: 0.8978629708, alpha: 1)),Color(#colorLiteral(red: 0.6828602552, green: 0.4983463287, blue: 0.9405499697, alpha: 1))]
         }

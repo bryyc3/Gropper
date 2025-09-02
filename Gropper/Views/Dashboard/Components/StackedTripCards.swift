@@ -21,24 +21,27 @@ struct StackedTripCards: View {
                 let progress = min(abs(dragOffset.height) / 150, 1)
                 let signedProgress = (dragOffset.height >= 0 ? 1 : -1) * progress
                 
-                
                 VStack{
-                    Text(trip.location)
-                        .foregroundStyle(Color(#colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)))
-                        .fontWeight(.semibold)
+                    NavigationLink(destination: TripView(tripData: trip, preview: .host)){
+                        Text(trip.location)
+                            .foregroundStyle(Color(#colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)))
+                            .fontWeight(.semibold)
+                    }
                     ScrollView(.horizontal){
                         HStack{
                             ForEach(trip.requestors, id: \.self.phoneNumber){user in
-                                LazyHStack{RequestorCard(requestor: user)}
+                                LazyHStack{RequestorCard(requestor: user, preview: true)}
                             }
                         }
+                        .padding()
                     }
                 }
                 .background(RoundedRectangle(cornerRadius: 25)
                     .fill(Gradient(colors: colorScheme)))
-                .frame(height: 200)
-                .offset(x: visualIndex == 0 ? 0 : Double(visualIndex) * 2, y: visualIndex == 0 ? dragOffset.height : Double(visualIndex) * 7)
-                .opacity(visualIndex == 0 ? 1.0 : Double(visualIndex + 1) / Double(trips.count))
+                .frame(height: 170)
+                .offset(x: visualIndex == 0 ? 0 : CGFloat(visualIndex) * 2, y: visualIndex == 0 ? dragOffset.height : CGFloat(visualIndex) * 10)
+                .scaleEffect(1 - CGFloat(visualIndex) * 0.05)
+                .shadow(radius: visualIndex == 0 ? 7 : 0)
                 .zIndex(Double(trips.count - visualIndex))
                 .rotation3DEffect(
                     .degrees(

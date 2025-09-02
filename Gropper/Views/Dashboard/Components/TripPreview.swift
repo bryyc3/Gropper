@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct TripPreview: View {
-    @EnvironmentObject var model: DashboardViewModel
     let previewType: TripType
     let tripData: [TripInfo]?
     
@@ -29,6 +28,9 @@ struct TripPreview: View {
                         ForEach(tripArray, id: \.self.tripId) { trip in
                             VStack{
                                 Text(trip.location)
+                                NavigationLink(destination: TripView(tripData: trip, preview: .request)){
+                                    Text("View Trip")
+                                }
                             }
                             .frame(height: 200)
                         }
@@ -48,7 +50,6 @@ struct TripPreview: View {
                 
             }
         }
-        .padding()
     }
 }
 

@@ -11,6 +11,8 @@ struct RequestorCard: View {
     @EnvironmentObject var model: DashboardViewModel
     @State var requestor: RequestorInfo
     
+    let preview: Bool
+    
     var body: some View {
         VStack{
             HStack{
@@ -25,13 +27,8 @@ struct RequestorCard: View {
             HStack {
                 if(requestor.itemsRequested.count > 0){
                     ForEach(requestor.itemsRequested){ item in
-                        HStack{
-                            Text(item.itemName)
-                                .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
-                            Circle()
-                                .fill(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)))
-                                .frame(width: 20, height: 20)
-                        }
+                        Text(item.itemName)
+                        .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                         .padding(10)
                         .background(
                             Capsule()
@@ -39,6 +36,8 @@ struct RequestorCard: View {
                         )
                         
                     }
+                } else {
+                    Text("No Items Requested")
                 }
             }
         }
@@ -54,5 +53,5 @@ struct RequestorCard: View {
 }
 
 #Preview {
-    RequestorCard(requestor: RequestorInfo(phoneNumber: "5089017225", itemsRequested: [ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item")]))
+    RequestorCard(requestor: RequestorInfo(phoneNumber: "5089017225", itemsRequested: [ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item")]), preview: true)
 }

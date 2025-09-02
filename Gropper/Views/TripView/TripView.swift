@@ -8,11 +8,46 @@
 import SwiftUI
 
 struct TripView: View {
+    @EnvironmentObject var model: DashboardViewModel
+    let tripData: TripInfo
+    let preview: TripType
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("Trip To \(tripData.location)")
+        if preview == .host {
+            Text("Hosted By: You")
+            Text("Items Requested")
+            ScrollView(.vertical){
+                ForEach(tripData.requestors, id: \.phoneNumber){requestor in
+                    RequestorCard(requestor: requestor, preview: false)
+                }
+            }
+        }
+        
+        else {
+            Text("Hosted By: \(tripData.host)")
+            Text("Items You Requested")
+            
+            if let user = tripData.requestors.first(where: {$0.phoneNumber == /*model.userNumber*/ "5"}){
+                ScrollView(.vertical){
+                    HStack{
+                        ForEach(user.itemsRequested, id: \.id){item in
+                            Text(item.itemName)
+                                .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                                .padding(10)
+                                .background(
+                                    Capsule()
+                                        .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
+                                )
+                        }
+                        Image(systemName: "plus.circle")
+                    }
+                }
+            }
+        }
     }
 }
 
 #Preview {
-    TripView()
+    TripView(tripData: TripInfo(requestors: [RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]), preview: .request)
 }
