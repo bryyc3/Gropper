@@ -11,10 +11,10 @@ import SwiftUI
 @MainActor
 class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate {
     let userNumber: String
-    @Published var tripData = TripInfo()
+    @Published var tripData = TripInfo(host: ContactInfo(phoneNumber: ""))
     @Published var selectedContacts: [ContactInfo] = []
     @Published var items: [ItemInfo] = [ItemInfo()]
-    @Published var hostContact = ContactInfo()
+    @Published var hostContact = ContactInfo(phoneNumber: "")
     @Published var successfulTripCreation = false
      
     override init(){
@@ -28,14 +28,14 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
     
     func createHostedTrip() {
         tripData.status = 1
-        tripData.host = userNumber
+        tripData.host.phoneNumber = userNumber
         tripData.tripId = UUID().uuidString
         tripCreation()
     }//create trip
     
     func requestTrip() {
-        tripData.host = hostContact.phoneNumber
-        tripData.requestors.append(RequestorInfo(phoneNumber: userNumber, itemsRequested: items))
+        tripData.host.phoneNumber = hostContact.phoneNumber
+        tripData.requestors.append(ContactInfo(phoneNumber: userNumber, itemsRequested: items))
         tripData.tripId = UUID().uuidString
         tripCreation()
     }//request trip

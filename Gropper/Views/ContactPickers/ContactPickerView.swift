@@ -14,14 +14,13 @@ struct ContactPickerView: UIViewControllerRepresentable {
     
     class Coordinator: NSObject, CNContactPickerDelegate {
         var parent: ContactPickerView
-        var contactInfo = ContactInfo()
+        var contactInfo = ContactInfo(phoneNumber: "")
         
         init(parent: ContactPickerView){
             self.parent = parent
         }
         func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: CNContact){
-            contactInfo.firstName = contact.givenName
-            contactInfo.lastName = contact.familyName
+            contactInfo.contactName = contact.givenName + " " + contact.familyName
             contactInfo.phoneNumber = contact.phoneNumbers.first?.value.stringValue ?? ""
             parent.onSelectContact(contactInfo)
         }

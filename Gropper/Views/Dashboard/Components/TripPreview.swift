@@ -24,23 +24,9 @@ struct TripPreview: View {
                 }
                 
                 if previewType == .request{
-                    LazyHStack{
-                        ForEach(tripArray, id: \.self.tripId) { trip in
-                            VStack{
-                                Text(trip.location)
-                                NavigationLink(destination: TripView(tripData: trip, preview: .request)){
-                                    Text("View Trip")
-                                }
-                            }
-                            .frame(height: 200)
-                        }
-                    }
-                    .background(RoundedRectangle(cornerRadius: 25)
-                        .fill(Gradient(colors: previewType.colorScheme)))
-                    .padding()
+                    RequestorTrips(trips: tripArray, colorScheme: previewType.colorScheme)
                 }
-            }
-            else {
+            }  else {
                 VStack{
                     Text("Nothing Here Yet!")
                         .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
@@ -54,5 +40,18 @@ struct TripPreview: View {
 }
 
 #Preview {
-    TripPreview(previewType: .host, tripData: [TripInfo(requestors: [RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]), TripInfo(requestors: [RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]),TripInfo(requestors: [RequestorInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), RequestorInfo(phoneNumber: "6", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])])])
+    TripPreview(previewType: .request, tripData: [
+        TripInfo(host: ContactInfo(phoneNumber: "test"), location: "Test Location", requestors: [ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]),
+        
+        TripInfo(host: ContactInfo(phoneNumber: "test"), location: "Test Location", requestors: [ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]),
+        
+        TripInfo(host: ContactInfo(phoneNumber: "test"), location: "Test Location", requestors: [ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), ContactInfo(phoneNumber: "6", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]),
+        
+        TripInfo(host: ContactInfo(phoneNumber: "test"), location: "Test Location", requestors: [ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]),
+        
+        TripInfo(host: ContactInfo(phoneNumber: "test"), location: "Test Location", requestors: [ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]),
+        
+        TripInfo(host: ContactInfo(phoneNumber: "test"), location: "Test Location", requestors: [ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), ContactInfo(phoneNumber: "6", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])])
+    ]
+    )
 }

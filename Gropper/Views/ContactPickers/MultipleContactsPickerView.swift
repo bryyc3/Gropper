@@ -37,9 +37,8 @@ struct MultipleContactsPickerView: UIViewControllerRepresentable {
             contactsArray = []
             if(!contacts.isEmpty){
                 for contact in contacts {
-                    var contactInfo = ContactInfo()
-                    contactInfo.firstName = contact.givenName
-                    contactInfo.lastName =  contact.familyName
+                    var contactInfo = ContactInfo(phoneNumber: "")
+                    contactInfo.contactName = contact.givenName + " " + contact.familyName
                     contactInfo.phoneNumber =  contact.phoneNumbers.first?.value.stringValue ?? ""
                     contactsArray.append(contactInfo)
                 }

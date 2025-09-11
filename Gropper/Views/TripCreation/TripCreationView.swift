@@ -28,7 +28,7 @@ struct TripCreationView: View {
                     HStack{
                         if (viewModel.selectedContacts.count > 0) {
                             List(viewModel.selectedContacts, id: \.phoneNumber) { contact in
-                                Text("\(contact.firstName) \(contact.lastName ?? "")")
+                                Text("\(contact.contactName ?? "")")
                             }
                         } else{
                             Text("No Contacts Selected")
@@ -40,7 +40,7 @@ struct TripCreationView: View {
                     if(viewModel.hostContact.phoneNumber.isEmpty) {
                         Text("No Contact Selected")
                     } else{
-                        Text("\(viewModel.hostContact.firstName) \(viewModel.hostContact.lastName ?? "")")
+                        Text("\(viewModel.hostContact.contactName ?? "")")
                     }
             }
                 
@@ -56,9 +56,16 @@ struct TripCreationView: View {
             if (formType == .request) {
                 Section(header: Text("What Do You need?")){
                     if (viewModel.items.count > 0) {
-                        List($viewModel.items){$item in
-                            TextField("Item Name", text: $item.itemName)
-                            TextField("Item Description", text: $item.itemDescription)
+                        ForEach($viewModel.items){$item in
+                            VStack{
+                                TextField("Item Name", text: $item.itemName)
+                                Divider()
+                                TextField("Item Description", text: $item.itemDescription)
+                            }
+                            .padding()
+                        }
+                        .onDelete{ indexSet in
+                            viewModel.items.remove(atOffsets: indexSet)
                         }
                         
                     } else{
@@ -69,6 +76,7 @@ struct TripCreationView: View {
                     Button("Add Item"){
                         viewModel.items.append(ItemInfo())
                     }
+                    
                 }
             }
         }
@@ -112,7 +120,7 @@ struct TripCreationView: View {
         case .host:
             return !viewModel.tripData.location.isEmpty && !viewModel.selectedContacts.isEmpty
         case .request:
-            return !viewModel.tripData.location.isEmpty && !viewModel.hostContact.phoneNumber.isEmpty
+            return !viewModel.tripData.location.isEmpty && !viewModel.hostContact.phoneNumber.isEmpty && viewModel.items.allSatisfy({!$0.itemName.trimmingCharacters(in: .whitespaces).isEmpty})
         }
     }
     

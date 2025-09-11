@@ -11,14 +11,14 @@ import Foundation
 struct TripInfo: Codable{
     var id = UUID()
     var tripId: String?
-    var host: String = ""
+    var host: ContactInfo
     var status: Int?
     var location: String = ""
     var locationDescription: String = ""
     var date: String?
     var time: String?
     
-    var requestors: [RequestorInfo] = []
+    var requestors: [ContactInfo] = []
     
     enum CodingKeys: String, CodingKey {
         case tripId

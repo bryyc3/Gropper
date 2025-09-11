@@ -26,7 +26,6 @@ struct DashboardView: View {
                     .foregroundColor(Color(#colorLiteral(red: 0.487426579, green: 0.3103705347, blue: 0.853105247, alpha: 1)))
                     .font(.system(size: 18, weight: .bold))
                     
-                    
                     ScrollView(.horizontal){
                         HStack{
                             CreateTripNav(destination: .host)
@@ -42,8 +41,9 @@ struct DashboardView: View {
                 }
                 .background(RoundedRectangle(cornerRadius: 25)
                     .fill(Gradient(colors: [Color(#colorLiteral(red: 0.7062481642, green: 0.8070108294, blue: 0.9882084727, alpha: 1)),Color(#colorLiteral(red: 0.5758828521, green: 0.4828243852, blue: 0.8095962405, alpha: 1))])))
-                
+                .padding(.vertical, 20)
                 TripPreview(previewType: .host, tripData: viewModel.hostedTrips)
+                Spacer()
                 TripPreview(previewType: .request, tripData: viewModel.requestedTrips)
                 
                 Spacer()
@@ -51,7 +51,6 @@ struct DashboardView: View {
             .padding()
         }
         .environmentObject(viewModel)
-        .onAppear{viewModel.retrieveTrips()}
     }
 }
 

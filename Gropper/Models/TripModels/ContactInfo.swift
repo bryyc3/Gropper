@@ -9,15 +9,20 @@ import Foundation
 import SwiftUI
 
 struct ContactInfo: Codable{
-    var firstName: String = ""
-    var lastName: String?
-    var phoneNumber: String = ""
+    var phoneNumber: String
+    var contactName: String?
+    var contactPhoto: Data?
+    var itemsRequested: [ItemInfo]?
+    
+    enum CodingKeys: CodingKey {
+            case phoneNumber, itemsRequested
+    }
 }
 
-func imageData(info: Data?) -> UIImage{
+func imageData(info: Data?) -> UIImage?{
     if let imageData = info, let contactPhoto = UIImage(data: imageData){
         return contactPhoto
     } else {
-        return UIImage(systemName: "person.circle")!
+        return nil
     }
 }

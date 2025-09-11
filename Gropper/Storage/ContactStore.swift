@@ -8,25 +8,25 @@
 import Foundation
 import Contacts
 
-func getContact(for requestor: RequestorInfo) -> RequestorInfo {
-    let phoneNumber = requestor.phoneNumber.digitsOnly
+func getContact(for userContact: ContactInfo) -> ContactInfo {
+    let phoneNumber = userContact.phoneNumber.digitsOnly
     
    
     let predicate = CNContact.predicateForContacts(matching: CNPhoneNumber(stringValue: phoneNumber))
     
-    let keys: [CNKeyDescriptor] = [CNContactGivenNameKey as CNKeyDescriptor, CNContactThumbnailImageDataKey as CNKeyDescriptor]
+    let keys: [CNKeyDescriptor] = [CNContactGivenNameKey as CNKeyDescriptor, CNContactFamilyNameKey as CNKeyDescriptor, CNContactThumbnailImageDataKey as CNKeyDescriptor]
     
     do{
         let contact = try CNContactStore().unifiedContacts(matching: predicate, keysToFetch: keys).first!
         
-        var newRequestor = requestor
+        var newUserContact = userContact
         
-        newRequestor.contactName = contact.givenName
-        newRequestor.contactPhoto = contact.thumbnailImageData
+        newUserContact.contactName = contact.givenName + " " + contact.familyName
+        newUserContact.contactPhoto = contact.thumbnailImageData
         
-        return newRequestor
+        return newUserContact
     } catch {
-        return requestor
+        return userContact
     }
 }
 
