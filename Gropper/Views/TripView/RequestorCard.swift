@@ -31,31 +31,48 @@ struct RequestorCard: View {
                 Text(requestor.contactName ?? requestor.phoneNumber)
                     .font(.headline)
                     .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             .frame(width: 200)
-            HStack {
+            
+            VStack{
                 if let items = requestor.itemsRequested{
-                    ForEach(items){ item in
-                        Text(item.itemName)
-                            .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
-                            .padding(10)
-                            .background(
-                                Capsule()
-                                    .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
-                            )
-                        
+                    HStack {
+                        ForEach(items.prefix(2)) { item in
+                            Text(item.itemName)
+                                .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                                .font(.system(size: 15))
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .padding(7)
+                                .background(
+                                    Capsule()
+                                        .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
+                                )
+                                
+                        }
+                        if items.count > 2 {
+                            Text("+\(items.count - 2)")
+                                .foregroundColor(.gray)
+                            
+                        }
                     }
                 } else {
                     Text("No Items Requested")
+                        .foregroundColor(.gray)
                 }
+                
             }
+            .frame(width: 200, height: 35)
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 25)
-            .fill(Color(#colorLiteral(red: 0.9495772719, green: 0.9495772719, blue: 0.9495772719, alpha: 1))))
+            .fill(Color(#colorLiteral(red: 0.9495772719, green: 0.9495772719, blue: 0.9495772719, alpha: 1)))
+            .shadow(radius: 3))
     }
 }
 
 #Preview {
-    RequestorCard(requestor: ContactInfo(phoneNumber: "5089017225", itemsRequested: [ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item")]), preview: true)
+    RequestorCard(requestor: ContactInfo(phoneNumber: "5089017225", itemsRequested: [ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"), ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"),ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item")]), preview: true)
 }

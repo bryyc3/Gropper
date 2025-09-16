@@ -48,6 +48,9 @@ class DashboardViewModel: ObservableObject {
                     }
                     self.requestedTrips = tripsRequested
                 }
+            } else {
+                self.hostedTrips = nil
+                self.requestedTrips = nil
             }// iterate through each type of trip and store contact info hosts and requestors
             
         } catch NetworkError.invalidURL {

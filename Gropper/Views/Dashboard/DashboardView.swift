@@ -42,11 +42,21 @@ struct DashboardView: View {
                 .background(RoundedRectangle(cornerRadius: 25)
                     .fill(Gradient(colors: [Color(#colorLiteral(red: 0.7062481642, green: 0.8070108294, blue: 0.9882084727, alpha: 1)),Color(#colorLiteral(red: 0.5758828521, green: 0.4828243852, blue: 0.8095962405, alpha: 1))])))
                 .padding(.vertical, 20)
-                TripPreview(previewType: .host, tripData: viewModel.hostedTrips)
-                Spacer()
-                TripPreview(previewType: .request, tripData: viewModel.requestedTrips)
                 
-                Spacer()
+                ScrollView(.vertical){
+                    VStack{
+                        TripPreview(previewType: .host, tripData: viewModel.hostedTrips)
+                            .padding(7)
+                        TripPreview(previewType: .request, tripData: viewModel.requestedTrips)
+                            .padding(7)
+                    }
+                }
+                .scrollIndicators(ScrollIndicatorVisibility.never)
+                .refreshable {
+                    Task{
+                        await viewModel.retrieveTrips()
+                    }
+                }
             }
             .padding()
         }

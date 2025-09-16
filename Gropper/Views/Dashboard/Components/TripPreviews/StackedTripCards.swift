@@ -21,27 +21,38 @@ struct StackedTripCards: View {
                 let progress = min(abs(dragOffset.height) / 150, 1)
                 let signedProgress = (dragOffset.height >= 0 ? 1 : -1) * progress
                 
-                VStack{
-                    NavigationLink(destination: TripView(tripData: trip, preview: .host)){
-                        Text(trip.location)
-                            .foregroundStyle(Color(#colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)))
-                            .fontWeight(.semibold)
+                VStack(spacing: 0){
+                    VStack(alignment: .leading) {
+                        NavigationLink(destination: TripView(tripData: trip, preview: .host)){
+                            Text(trip.location)
+                                .font(.system(size: 20, weight: .bold))
+                                .frame(alignment: .leading)
+                                .foregroundColor(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)))
+                        }
+                        .padding(.top, 15)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 25)
+                    
                     ScrollView(.horizontal){
                         HStack{
                             ForEach(trip.requestors, id: \.self.phoneNumber){user in
                                 LazyHStack{RequestorCard(requestor: user, preview: true)}
                             }
                         }
+                        .offset(y: -2)
                         .padding()
                     }
+                    .clipShape(RoundedRectangle(cornerRadius: 25))
+                    .padding(7)
+                    .frame(height: 140)
                 }
                 .background(RoundedRectangle(cornerRadius: 25)
-                    .fill(Gradient(colors: colorScheme)))
+                                .fill(Gradient(colors: colorScheme))
+                                .shadow(radius: visualIndex == 0 ? 7 : CGFloat(visualIndex) * 3))
                 .frame(height: 170)
-                .offset(x: visualIndex == 0 ? 0 : CGFloat(visualIndex) * 2, y: visualIndex == 0 ? dragOffset.height : CGFloat(visualIndex) * 10)
+                .offset(x: visualIndex == 0 ? 0 : CGFloat(visualIndex) * 3, y: visualIndex == 0 ? dragOffset.height : CGFloat(visualIndex) * 12)
                 .scaleEffect(1 - CGFloat(visualIndex) * 0.05)
-                .shadow(radius: visualIndex == 0 ? 7 : 0)
                 .zIndex(Double(trips.count - visualIndex))
                 .rotation3DEffect(
                     .degrees(
@@ -85,6 +96,9 @@ struct StackedTripCards: View {
                 )
             }
         }
-        .padding()
     }
+}
+
+#Preview {
+    StackedTripCards(trips: [TripInfo(host: ContactInfo(phoneNumber: "test"), location: "Test Location", requestors: [ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]), TripInfo(host: ContactInfo(phoneNumber: "test"), location: "Test Location", requestors: [ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")]), ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])])],colorScheme: TripType.host.colorScheme)
 }
