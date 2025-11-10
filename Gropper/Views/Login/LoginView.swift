@@ -21,6 +21,14 @@ struct LoginView: View {
                     }
                 }
             }
+            .onAppear(){
+                Task{
+                    do{
+                        print(try getItem(forKey: "accessToken"))
+                        print(try getItem(forKey: "refreeshToken"))
+                    }
+                }
+            }
 
         }
         else{

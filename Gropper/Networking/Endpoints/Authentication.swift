@@ -16,7 +16,7 @@ struct Authentication: Endpoint {
     
     static func sendOtp(mobileNumber: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "http://localhost:8080/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
             path: "simulate-otp",
             method: .post,
             headers: ["Content-Type": "application/json"],
@@ -26,7 +26,7 @@ struct Authentication: Endpoint {
     
     static func verifyOtp(mobileNumber: String, otp: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "http://localhost:8080/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
             path: "simulate-otp-verification",
             method: .post,
             headers: ["Content-Type": "application/json"],
@@ -37,7 +37,7 @@ struct Authentication: Endpoint {
     
     static func verifyRefreshToken(token: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "http://localhost:8080/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
             path: "verify-refresh",
             method: .post,
             headers: ["Authorization": token]

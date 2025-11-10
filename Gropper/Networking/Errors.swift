@@ -19,3 +19,7 @@ enum NetworkError: Error{
     case unauthorized
     case noAccessToken
 }
+
+enum WebsocketError: Error {
+    case decodingError
+}

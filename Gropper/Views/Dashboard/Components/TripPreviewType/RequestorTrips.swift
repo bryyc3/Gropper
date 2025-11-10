@@ -37,7 +37,7 @@ struct RequestorTrips: View {
                                 .fontWeight(.semibold)
                         }
                         
-                        NavigationLink(destination: TripView(tripData: trip, preview: .request)){
+                        NavigationLink(destination: TripView(tripIndex: index, preview: .request)){
                             Text("View Trip")
                                 .font(.system(size: 15, weight: .semibold))
                                 .padding(.horizontal, 55)

@@ -10,14 +10,16 @@ import Contacts
 
 func getContact(for userContact: ContactInfo) -> ContactInfo {
     let phoneNumber = userContact.phoneNumber.digitsOnly
-    
+    print(phoneNumber)
    
     let predicate = CNContact.predicateForContacts(matching: CNPhoneNumber(stringValue: phoneNumber))
     
     let keys: [CNKeyDescriptor] = [CNContactGivenNameKey as CNKeyDescriptor, CNContactFamilyNameKey as CNKeyDescriptor, CNContactThumbnailImageDataKey as CNKeyDescriptor]
     
     do{
-        let contact = try CNContactStore().unifiedContacts(matching: predicate, keysToFetch: keys).first!
+        guard let contact = try CNContactStore().unifiedContacts(matching: predicate, keysToFetch: keys).first else {
+            return userContact
+        }
         
         var newUserContact = userContact
         

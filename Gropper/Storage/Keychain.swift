@@ -78,6 +78,7 @@ func deleteToken(forKey key: String) throws {
     guard status == errSecSuccess else {
         throw KeychainError.unknown(status)
     }
+    print("Deleted item")
 }
 
 enum KeychainError: Error {

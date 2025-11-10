@@ -16,7 +16,7 @@ struct TripData: Endpoint {
    
     static func createTrip(tripInformation: TripInfo, contacts: [ContactInfo]?) -> TripData {
         return TripData(
-            baseUrl: URL(string: "http://localhost:8080/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
             path: "create-trip",
             method: .post,
             headers: ["Content-Type": "application/json"],
@@ -27,11 +27,24 @@ struct TripData: Endpoint {
     
     static func getTrips(user: String) -> TripData {
         return TripData(
-            baseUrl: URL(string: "http://localhost:8080/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
             path: "trips",
             method: .post,
             headers: ["Content-Type": "application/json"],
             body: ["user": user]
+        )
+    }
+    
+    static func updateItems(tripId: String, host: String, userPhone: String, itemsRequested: [ItemInfo]) -> TripData {
+        return TripData(
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            path: "update-items",
+            method: .post,
+            headers: ["Content-Type": "application/json"],
+            body: ["tripId": tripId,
+                   "host": host,
+                   "user": userPhone,
+                   "items": itemsRequested]
         )
     }
 }

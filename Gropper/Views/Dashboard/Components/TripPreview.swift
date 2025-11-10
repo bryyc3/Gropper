@@ -33,7 +33,7 @@ struct TripPreview: View {
                         .font(.system(size: 15))
                         .fontWeight(.semibold)
                 }
-                .padding(.bottom,200)
+                .padding(.bottom, 100)
             }
         }
         

@@ -1,13 +1,13 @@
 //
-//  CreateTripNav.swift
+//  CreateTripDestination.swift
 //  Gropper
 //
-//  Created by Bryce King on 7/22/25.
+//  Created by Bryce King on 9/16/25.
 //
 
 import SwiftUI
 
-struct CreateTripNav: View {
+struct CreateTripDestination: View {
     @EnvironmentObject var model: DashboardViewModel
     let destination: TripType
     
@@ -44,8 +44,4 @@ struct CreateTripNav: View {
         }
         .padding(10)
     }
-}
-
-#Preview {
-    CreateTripNav(destination: .host)
 }

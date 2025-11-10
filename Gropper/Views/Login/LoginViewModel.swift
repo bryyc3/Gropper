@@ -15,6 +15,7 @@ class LoginViewModel: ObservableObject{
         Task{
             do{
                 let request = Authentication.sendOtp(mobileNumber: user.phoneNumber)
+                print(request)
                 user.otpGenerated = try await NetworkManager.shared.execute(endpoint: request, auth: false, type: Bool.self) ?? false
             } catch BuildRequestError.encodingError{
                 print("encoding error")
@@ -38,7 +39,7 @@ class LoginViewModel: ObservableObject{
                     throw NetworkError.decodingError
                 }
                 AuthManager.shared.login(accessToken: accessToken, refreshToken: refreshToken, phoneNumber: user.phoneNumber)
-                resetUser()
+                //resetUser()
             } catch BuildRequestError.encodingError {
                 print("Auth encoding error")
             } catch NetworkError.invalidURL {

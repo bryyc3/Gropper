@@ -40,22 +40,27 @@ struct RequestorCard: View {
                 if let items = requestor.itemsRequested{
                     HStack {
                         ForEach(items.prefix(2)) { item in
-                            Text(item.itemName)
-                                .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
-                                .font(.system(size: 15))
-                                .lineLimit(1)
-                                .truncationMode(.tail)
-                                .padding(7)
-                                .background(
-                                    Capsule()
-                                        .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
-                                )
-                                
+                            if item.itemName == " "{
+                                Text("No Items Requested")
+                                    .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
+                                    .font(.system(size: 10))
+                                    .fontWeight(.semibold)
+                            } else {
+                                Text(item.itemName)
+                                    .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                                    .font(.system(size: 15))
+                                    .lineLimit(1)
+                                    .truncationMode(.tail)
+                                    .padding(7)
+                                    .background(
+                                        Capsule()
+                                            .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
+                                    )
+                            }
                         }
                         if items.count > 2 {
                             Text("+\(items.count - 2)")
                                 .foregroundColor(.gray)
-                            
                         }
                     }
                 } else {

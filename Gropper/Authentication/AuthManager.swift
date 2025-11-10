@@ -38,8 +38,10 @@ class AuthManager {
     func logout() {
         Task{
             do{
-                try deleteToken(forKey: "accessToken")
-                try deleteToken(forKey: "refreshToken")
+                SocketManagerService.shared.disconnectSocket()
+                try deleteToken(forKey: accessTokenKey)
+                try deleteToken(forKey: refreshTokenKey)
+                try deleteToken(forKey: userPhone)
             } catch KeychainError.unknown{
                 print("Keychain error")
             }
