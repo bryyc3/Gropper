@@ -25,10 +25,15 @@ struct TripView: View {
                     Text("Host: You")
                         .font(.system(size: 20, weight: .semibold))
                         .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
+                        .padding(.bottom, 7)
                     Text("Items Requested")
+                        .font(.system(size: 25, weight: .bold))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                     ScrollView(.vertical){
                         ForEach(model.hostedTrips![tripIndex].requestors, id: \.phoneNumber){requestor in
                             RequestorCard(requestor: requestor, preview: false)
+                                .padding()
                         }
                     }
                 }

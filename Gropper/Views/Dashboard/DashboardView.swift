@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @StateObject var viewModel = DashboardViewModel()
+    @StateObject var viewModel = TripsViewModel()
     
     var body: some View {
         NavigationView{
@@ -16,9 +16,9 @@ struct DashboardView: View {
                 CreateTripNav()
                 ScrollView(.vertical){
                     VStack{
-                        TripPreview(previewType: .host, tripData: viewModel.hostedTrips)
+                        TripPreview(previewType: .host, tripData: viewModel.confirmedHostedTrips)
                             .padding(7)
-                        TripPreview(previewType: .request, tripData: viewModel.requestedTrips)
+                        TripPreview(previewType: .request, tripData: viewModel.confirmedRequestedTrips)
                             .padding(7)
                         Button("Logout"){
                             AuthManager.shared.logout()
@@ -32,7 +32,7 @@ struct DashboardView: View {
                     }
                 }
             }
-            .padding()
+            .padding(7)
         }
         .environmentObject(viewModel)
     }

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct CreateTripDestination: View {
     @EnvironmentObject var model: DashboardViewModel
-    let destination: TripType
+    let destination: DashTripType
     
     var body: some View {
         VStack{

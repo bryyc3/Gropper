@@ -13,18 +13,18 @@ struct TripPreview: View {
     
     var body: some View {
         VStack{
-            Text(previewType.tripPreviewTitle)
+            Text(previewType.dashPreviewTitle)
                 .font(.system(size: 20))
                 .fontWeight(.bold)
                 .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
             
             if let tripArray = tripData{
                 if previewType == .host{
-                    StackedTripCards(trips: tripArray, colorScheme: previewType.colorScheme)
+                    StackedTripCards(trips: tripArray, colorScheme: previewType.dashColorScheme)
                 }
                 
                 if previewType == .request{
-                    RequestorTrips(trips: tripArray, colorScheme: previewType.colorScheme)
+                    RequestorTrips(trips: tripArray, colorScheme: previewType.dashColorScheme)
                 }
             }  else {
                 VStack{

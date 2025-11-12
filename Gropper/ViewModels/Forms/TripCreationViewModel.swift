@@ -8,6 +8,7 @@
 import Foundation
 import ContactsUI
 import SwiftUI
+
 @MainActor
 class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate {
     let userNumber: String

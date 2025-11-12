@@ -1,8 +1,8 @@
 //
-//  DashboardViewModel.swift
+//  BaseTripsViewModel.swift
 //  Gropper
 //
-//  Created by Bryce King on 5/28/25.
+//  Created by Bryce King on 11/12/25.
 //
 
 import Foundation
@@ -10,12 +10,18 @@ import Contacts
 import SwiftUI
 
 @MainActor
-class DashboardViewModel: ObservableObject {
+class TripsViewModel: ObservableObject {
     let userNumber: String
     @Published var hostedTrips: [TripInfo]?
     @Published var requestedTrips: [TripInfo]?
-    
+
     private let socketService = SocketManagerService.shared
+    
+    var pendingHostedTrips: [TripInfo]? {hostedTrips?.filter{$0.status == nil}}
+    var pendingRequestedTrips: [TripInfo]? {requestedTrips?.filter{$0.status == nil}}
+    
+    var confirmedHostedTrips: [TripInfo]? {hostedTrips?.filter{$0.status == 1}}
+    var confirmedRequestedTrips: [TripInfo]? {requestedTrips?.filter{$0.status == 1}}
     
      init(){
         guard let phoneNumber = getItem(forKey: "userPhoneNumber") else {
@@ -154,3 +160,5 @@ class DashboardViewModel: ObservableObject {
         
     }
 }
+
+

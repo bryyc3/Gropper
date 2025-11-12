@@ -15,37 +15,58 @@ struct RequestorCard: View {
         VStack{
             ZStack{
                 if let contactPhoto = imageData(info: requestor.contactPhoto){
-                    Image(uiImage: contactPhoto)
-                        .resizable()
-                        .position(x: -85, y: -2)
-                        .frame(width: 35, height: 35)
+                    if preview{
+                        Image(uiImage: contactPhoto)
+                            .resizable()
+                            .position(x: -85, y: -2)
+                            .frame(width: 35, height: 35)
+                    } else {
+                        Image(uiImage: contactPhoto)
+                            .resizable()
+                            .position(x: -145)
+                            .frame(width: 45, height: 45)
+                    }
                 } else {
-                    Image(systemName: "person.crop.circle.fill")
-                        .resizable()
-                        .renderingMode(.template)
-                        .position(x: -85, y: -2)
-                        .frame(width: 35, height: 35)
-                        .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                    if preview{
+                        Image(systemName: "person.crop.circle.fill")
+                            .resizable()
+                            .renderingMode(.template)
+                            .position(x: -85, y: -2)
+                            .frame(width: 35, height: 35)
+                            .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                    } else {
+                        Image(systemName: "person.crop.circle.fill")
+                            .resizable()
+                            .renderingMode(.template)
+                            .position(x: -135)
+                            .frame(width: 45, height: 45)
+                            .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                    }
                 }
                 
-                Text(requestor.contactName ?? requestor.phoneNumber)
-                    .font(.headline)
-                    .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
-                    .lineLimit(1)
-                    .truncationMode(.tail)
+                if preview{
+                    Text(requestor.contactName ?? requestor.phoneNumber)
+                        .font(.headline)
+                        .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                } else {
+                    Text(requestor.contactName ?? requestor.phoneNumber)
+                        .font(.system(size: 23, weight: .bold))
+                        .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        
+                }
+                
             }
             .frame(width: 200)
             
-            VStack{
-                if let items = requestor.itemsRequested{
-                    HStack {
-                        ForEach(items.prefix(2)) { item in
-                            if item.itemName == " "{
-                                Text("No Items Requested")
-                                    .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
-                                    .font(.system(size: 10))
-                                    .fontWeight(.semibold)
-                            } else {
+            if preview {
+                VStack{
+                    if let items = requestor.itemsRequested{
+                        HStack {
+                            ForEach(items.prefix(2)) { item in
                                 Text(item.itemName)
                                     .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                                     .font(.system(size: 15))
@@ -56,20 +77,54 @@ struct RequestorCard: View {
                                         Capsule()
                                             .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
                                     )
+                                
+                            }
+                            if items.count > 2 {
+                                Text("+\(items.count - 2)")
+                                    .foregroundColor(.gray)
                             }
                         }
-                        if items.count > 2 {
-                            Text("+\(items.count - 2)")
-                                .foregroundColor(.gray)
-                        }
+                    } else {
+                        Text("No Items Requested")
+                            .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
+                            .font(.system(size: 15))
+                            .fontWeight(.semibold)
                     }
-                } else {
-                    Text("No Items Requested")
-                        .foregroundColor(.gray)
                 }
-                
+                .frame(width: 200, height: 35)
+            } else {
+                VStack{
+                    if let items = requestor.itemsRequested{
+                        ScrollView(.vertical) {
+                            FlowLayout(spacing: 10){
+                                ForEach(items){ item in
+                                    Text(item.itemName)
+                                        .font(.system(size: 15))
+                                        .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                                        .padding(7)
+                                        .lineLimit(1)
+                                        .truncationMode(.tail)
+                                        .frame(minWidth: 0, maxWidth: 170)
+                                        .background(
+                                            Capsule()
+                                                .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
+                                        )
+                                }
+                            }
+                            .padding()
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 95)
+                    } else {
+                        Text("No Items Requested")
+                            .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
+                            .font(.system(size: 23))
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                }
+                .frame(width: 300, height: 55)
+                .padding(5)
             }
-            .frame(width: 200, height: 35)
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 25)
@@ -79,5 +134,5 @@ struct RequestorCard: View {
 }
 
 #Preview {
-    RequestorCard(requestor: ContactInfo(phoneNumber: "5089017225", itemsRequested: [ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"), ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"),ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item")]), preview: true)
+    RequestorCard(requestor: ContactInfo(phoneNumber: "5089017225", itemsRequested: [ItemInfo(id: UUID(),itemName: " ", itemDescription: "test item")/*, ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"),ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"), ItemInfo(id: UUID(),itemName: "test itemsfdfsd", itemDescription: "test item")*/]), preview: false)
 }

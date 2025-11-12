@@ -13,7 +13,18 @@ struct ContentView: View {
     var body: some View {
         Group{
             if(authenticated){
-              DashboardView()
+                TabView{
+                    DashboardView()
+                        .tabItem{
+                            Label("Dashboard", systemImage: "house")
+                                .environment(\.symbolVariants, .none)
+                        }
+                    PendingTripsView()
+                        .tabItem{
+                            Label("Pending Trips", systemImage: "house")
+                                .environment(\.symbolVariants, .none)
+                        }
+                }
             }
             else{
                 LoginView()
