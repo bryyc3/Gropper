@@ -17,7 +17,7 @@ struct OtpView: View {
                     .multilineTextAlignment(.center)
                     .textInputAutocapitalization(.never)
                 Button("Login") {
-                    otpViewModel.checkOtp()
+                    Task{ await otpViewModel.checkOtp()}
                 }
             }
         }

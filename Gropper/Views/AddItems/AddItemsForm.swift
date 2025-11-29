@@ -43,7 +43,7 @@ struct AddItemsForm: View {
                 ToolbarItem(placement: .confirmationAction){
                     Button("Submit"){
                         Task{
-                            viewModel.addItems(trip: tripId, tripHost: host)
+                            await viewModel.addItems(trip: tripId, tripHost: host)
                         }
                     }
                     .disabled(!canSubmit)

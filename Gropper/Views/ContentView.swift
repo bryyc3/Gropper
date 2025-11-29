@@ -21,7 +21,7 @@ struct ContentView: View {
                         }
                     PendingTripsView()
                         .tabItem{
-                            Label("Pending Trips", systemImage: "house")
+                            Label("Pending Trips", systemImage: "basket")
                                 .environment(\.symbolVariants, .none)
                         }
                 }

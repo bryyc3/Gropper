@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct CreateTripDestination: View {
-    @EnvironmentObject var model: DashboardViewModel
-    let destination: DashTripType
+    @EnvironmentObject var model: TripsViewModel
+    let destination: TripType
     
     var body: some View {
         VStack{

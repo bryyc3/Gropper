@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TripView: View {
-    @EnvironmentObject var model: DashboardViewModel
+    @EnvironmentObject var model: TripsViewModel
     let tripIndex: Int
     let preview: TripType
     

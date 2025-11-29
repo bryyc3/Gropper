@@ -17,7 +17,7 @@ struct LoginView: View {
                     TextField("Enter Your Phone Number", text: $loginViewModel.user.phoneNumber)
                         .multilineTextAlignment(.center)
                     Button("Get Otp"){
-                        loginViewModel.requestOtp()
+                        Task{await loginViewModel.requestOtp()}
                     }
                 }
             }
@@ -25,7 +25,7 @@ struct LoginView: View {
                 Task{
                     do{
                         print(try getItem(forKey: "accessToken"))
-                        print(try getItem(forKey: "refreeshToken"))
+                        print(try getItem(forKey: "refreshToken"))
                     }
                 }
             }

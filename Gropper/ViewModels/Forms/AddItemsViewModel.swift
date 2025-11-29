@@ -24,29 +24,27 @@ class AddItemsViewModel: NSObject, ObservableObject {
         userNumber = phoneNumber
     }
     
-    func addItems(trip: String, tripHost: String) {
-        Task{
-            do{
-                
-                let request = TripData.updateItems(tripId: trip, host: tripHost, userPhone: userNumber, itemsRequested: items)
-                
-                guard let itemsAdded = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else {
-                    throw NetworkError.invalidResponse
-                }
-                if(itemsAdded) {
-                    successfullyAdded = itemsAdded
-                } else {
-                    print ("couldnt add items")
-                }
-            } catch NetworkError.invalidURL {
-                print ("add items invalid URL")
-            } catch NetworkError.invalidResponse {
-                print ("add items invalid response")
-            } catch NetworkError.unauthorized{
-                AuthManager.shared.logout()
-            } catch {
-                print ("add items unexpected error")
+    func addItems(trip: String, tripHost: String) async {
+        do{
+            
+            let request = TripData.updateItems(tripId: trip, host: tripHost, userPhone: userNumber, itemsRequested: items)
+            
+            guard let itemsAdded = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else {
+                throw NetworkError.invalidResponse
             }
+            if(itemsAdded) {
+                successfullyAdded = itemsAdded
+            } else {
+                print ("couldnt add items")
+            }
+        } catch NetworkError.invalidURL {
+            print ("add items invalid URL")
+        } catch NetworkError.invalidResponse {
+            print ("add items invalid response")
+        } catch NetworkError.unauthorized{
+            AuthManager.shared.logout()
+        } catch {
+            print ("add items unexpected error")
         }
     }
 }
