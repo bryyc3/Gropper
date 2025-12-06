@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TripView: View {
     @EnvironmentObject var model: TripsViewModel
+    @State private var itemPopover = false
     let tripIndex: Int
     let preview: TripType
     
@@ -52,9 +53,11 @@ struct TripView: View {
                         ScrollView(.vertical){
                             FlowLayout(spacing: 10){
                                 if let user = model.requestedTrips![tripIndex].requestors.first(where: {$0.phoneNumber == model.userNumber}){
-                                    if let items = user.itemsRequested{
+                                    if let items = user.itemsRequested {
                                         ForEach(items, id: \.id){item in
-                                            Text(item.itemName)
+                                            Button(item.itemName) {
+                                                itemPopover = true
+                                            }
                                                 .font(.system(size: 25))
                                                 .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                                                 .padding(10)
@@ -65,6 +68,11 @@ struct TripView: View {
                                                     Capsule()
                                                         .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
                                                 )
+                                                .popover(isPresented: $itemPopover) {
+                                                    Text(item.itemName)
+                                                        .font(.headline)
+                                                        .padding()
+                                                }
                                         }
                                     }
                                 }

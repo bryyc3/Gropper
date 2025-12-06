@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct RequestorCard: View {
+    @State private var selectedItem: ItemInfo?
+    @State private var itemPopover = false
     let requestor: ContactInfo
     let preview: Bool
     
@@ -98,10 +100,15 @@ struct RequestorCard: View {
                         ScrollView(.vertical) {
                             FlowLayout(spacing: 10){
                                 ForEach(items){ item in
-                                    Text(item.itemName)
-                                        .font(.system(size: 15))
+                                    Button {
+                                        selectedItem = item
+                                        itemPopover = true
+                                    } label: {
+                                        Text(item.itemName)
+                                    }
+                                        .font(.system(size: 25))
                                         .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
-                                        .padding(7)
+                                        .padding(10)
                                         .lineLimit(1)
                                         .truncationMode(.tail)
                                         .frame(minWidth: 0, maxWidth: 170)
@@ -109,6 +116,22 @@ struct RequestorCard: View {
                                             Capsule()
                                                 .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
                                         )
+                                        .popover(isPresented: Binding(
+                                                        get: { selectedItem?.id == item.id && itemPopover },
+                                                        set: { itemPopover = $0 }
+                                        )) {
+                                            VStack(spacing: 12) {
+                                                Text(item.itemName)
+                                                    .fontWeight(.semibold)
+                                                
+                                                Text(item.itemDescription)
+                                                    .padding(.bottom, 8)
+                                                
+                                                Button("Close") { itemPopover = false }
+                                            }
+                                            .padding()
+                                            .presentationCompactAdaptation(.popover)
+                                        }
                                 }
                             }
                             .padding()
@@ -134,5 +157,5 @@ struct RequestorCard: View {
 }
 
 #Preview {
-    RequestorCard(requestor: ContactInfo(phoneNumber: "5089017225", itemsRequested: [ItemInfo(id: UUID(),itemName: " ", itemDescription: "test item")/*, ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"),ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"), ItemInfo(id: UUID(),itemName: "test itemsfdfsd", itemDescription: "test item")*/]), preview: false)
+    RequestorCard(requestor: ContactInfo(phoneNumber: "5089017225", itemsRequested: [ItemInfo(id: UUID(),itemName: " ", itemDescription: "test item"), ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"),ItemInfo(id: UUID(),itemName: "test item", itemDescription: "test item"), ItemInfo(id: UUID(),itemName: "test itemsfdfsd", itemDescription: "test item")]), preview: false)
 }

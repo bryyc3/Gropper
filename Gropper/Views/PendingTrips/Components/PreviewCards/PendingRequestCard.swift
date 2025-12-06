@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PendingRequestCard: View {
     @EnvironmentObject var model: TripsViewModel
+    @State private var selectedTrip: String?
     @State private var showingCancelConfirmation: Bool = false
     
     let trips: [TripInfo]
@@ -71,16 +72,10 @@ struct PendingRequestCard: View {
                                 }
                                 .frame(width: 200, height: 85)
                                 .padding(5)
-                            Button("Nevermind") {
-                                showingCancelConfirmation.toggle()
+                                Button("Nevermind") {
+                                    selectedTrip = trip.tripId
+                                    showingCancelConfirmation.toggle()
                                 }
-                            .confirmationDialog("Are you sure you want to cancel this request?", isPresented: $showingCancelConfirmation) {
-                                Button("Delete request", role: .destructive) {
-                                    Task{await model.deleteTrip(trip: trip.tripId!)}
-                                }
-                            } message: {
-                                Text("Are you sure you want to cancel this request?")
-                            }
                                 .buttonStyle(.borderedProminent)
                                 .tint(Gradient(colors: [Color(#colorLiteral(red: 0.9183334112, green: 0.374332577, blue: 0.4192636609, alpha: 1)), Color(#colorLiteral(red: 0.925404489, green: 0.2444823682, blue: 0.2255580425, alpha: 1))]))
                                 .foregroundColor(.white)
@@ -91,6 +86,13 @@ struct PendingRequestCard: View {
                                 .fill(Gradient(colors: [Color(#colorLiteral(red: 0.9322556853, green: 0.9322556853, blue: 0.9322556853, alpha: 1)), Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1))]))
                                 .shadow(radius: 7))
                             
+                        }
+                        .confirmationDialog("Are you sure you want to cancel this request?", isPresented: $showingCancelConfirmation) {
+                            Button("Delete request", role: .destructive) {
+                                Task{await model.deleteTrip(trip: selectedTrip!)}
+                            }
+                        } message: {
+                            Text("Are you sure you want to cancel this request?")
                         }
                         .background(RoundedRectangle(cornerRadius: 25)
                             .fill(Gradient(colors: colorScheme))
