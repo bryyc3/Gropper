@@ -10,10 +10,9 @@ import SwiftUI
 struct AddItemsForm: View {
     let tripId: String
     let host: String
+    var onFormSubmit: () -> Void
     
     @StateObject var viewModel = AddItemsViewModel()
-    
-    var onFormSubmit: () -> Void
     @Environment(\.dismiss) var dismiss
     
     var body: some View {

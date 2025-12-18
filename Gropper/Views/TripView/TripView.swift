@@ -9,7 +9,9 @@ import SwiftUI
 
 struct TripView: View {
     @EnvironmentObject var model: TripsViewModel
+    @State private var selectedItem: ItemInfo?
     @State private var itemPopover = false
+    
     let tripIndex: Int
     let preview: TripType
     
@@ -37,8 +39,17 @@ struct TripView: View {
                                 .padding()
                         }
                     }
+                    .toolbar{
+                        ToolbarItem(placement: .confirmationAction){
+                            NavigationLink(destination: AddRequestorsForm(tripId: model.hostedTrips![tripIndex].tripId!, onFormSubmit: {Task{ await model.retrieveTrips()}})){
+                                Text("Add Requestors")
+                                    .font(.system(size: 15, weight: .semibold))
+                                    .padding(.horizontal, 65)
+                                    .padding(.vertical, 5)
+                            }
+                        }
+                    }
                 }
-                
                 else {
                     Text("Host: \(model.requestedTrips![tripIndex].host.contactName ?? model.requestedTrips![tripIndex].host.phoneNumber)")
                         .font(.system(size: 20, weight: .semibold))
@@ -56,6 +67,7 @@ struct TripView: View {
                                     if let items = user.itemsRequested {
                                         ForEach(items, id: \.id){item in
                                             Button(item.itemName) {
+                                                selectedItem = item
                                                 itemPopover = true
                                             }
                                                 .font(.system(size: 25))
@@ -68,10 +80,23 @@ struct TripView: View {
                                                     Capsule()
                                                         .stroke(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)), lineWidth: 2)
                                                 )
-                                                .popover(isPresented: $itemPopover) {
-                                                    Text(item.itemName)
-                                                        .font(.headline)
-                                                        .padding()
+                                                .popover(isPresented: Binding(
+                                                                get: { selectedItem?.id == item.id && itemPopover },
+                                                                set: { itemPopover = $0 }
+                                                )) {
+                                                    VStack(spacing: 12) {
+                                                        Text(item.itemName)
+                                                            .fontWeight(.semibold)
+                                                        
+                                                        Text(item.itemDescription)
+                                                            .padding(.bottom, 8)
+                                                        
+                                                        Button("Delete Item") {Task{await model.deleteItem(trip: model.requestedTrips![tripIndex].tripId!, itemName: item.itemName)}}
+                                                        
+                                                        Button("Close") { itemPopover = false }
+                                                    }
+                                                    .padding()
+                                                    .presentationCompactAdaptation(.popover)
                                                 }
                                         }
                                     }
@@ -93,17 +118,4 @@ struct TripView: View {
             .padding()
         }
     }
-}
-
-#Preview {
-//    TripView(tripData: TripInfo(host: ContactInfo(phoneNumber: "test"), location: "test location", requestors: [ContactInfo(phoneNumber: "5", itemsRequested:
-//        [
-//            ItemInfo(id: UUID(),itemName: "strkyyyyy", itemDescription: "strawberries"),
-//            ItemInfo(id: UUID(),itemName: "milkaaaaaaa", itemDescription: "strawberries"),
-//            ItemInfo(id: UUID(),itemName: "milk", itemDescription: "strawberries"),
-//            ItemInfo(id: UUID(),itemName: "milkeses", itemDescription: "strawberries"),
-//            ItemInfo(id: UUID(),itemName: "milk", itemDescription: "strawberries"),
-//            ItemInfo(id: UUID(),itemName: "milkddddddd", itemDescription: "strawberries"),
-//            ItemInfo(id: UUID(),itemName: "milk", itemDescription: "strawberries"),
-//        ]),ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a"), ItemInfo(id: UUID(),itemName: "milk", itemDescription: "strawberries")]), ContactInfo(phoneNumber: "5", itemsRequested: [ItemInfo(id: UUID(),itemName: "a", itemDescription: "a")])]), preview: .request)
 }

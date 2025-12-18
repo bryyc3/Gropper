@@ -28,17 +28,39 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
     }
     
     func createHostedTrip() {
-        tripData.status = 1
-        tripData.host.phoneNumber = userNumber
-        tripData.tripId = UUID().uuidString
-        tripCreation()
+        do {
+            for (index, requestor) in selectedContacts.enumerated() {
+                guard let requestorNumber = try? NumberParse(number: requestor.phoneNumber) else {
+                    throw NumberParseError.parseErr
+                }
+                selectedContacts[index].phoneNumber = requestorNumber
+            }//parse requestor numbers
+            tripData.status = 1
+            tripData.host.phoneNumber = userNumber
+            tripData.tripId = UUID().uuidString
+            tripCreation()
+        } catch NumberParseError.parseErr{
+            print("Number Parse Error")
+        } catch {
+            print("Uknown request error")
+        }
+       
     }//create trip
     
     func requestTrip() {
-        tripData.host.phoneNumber = hostContact.phoneNumber
-        tripData.requestors.append(ContactInfo(phoneNumber: userNumber, itemsRequested: items))
-        tripData.tripId = UUID().uuidString
-        tripCreation()
+        do {
+            guard let hostNumber = try? NumberParse(number: hostContact.phoneNumber) else {
+                throw NumberParseError.parseErr
+            }//parse host number
+            tripData.host.phoneNumber = hostNumber
+            tripData.requestors.append(ContactInfo(phoneNumber: userNumber, itemsRequested: items))
+            tripData.tripId = UUID().uuidString
+            tripCreation()
+        } catch NumberParseError.parseErr {
+            print("Number Parse Error")
+        } catch {
+            print("Uknown request error")
+        }
     }//request trip
     
     

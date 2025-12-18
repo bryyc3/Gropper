@@ -144,6 +144,25 @@ class TripsViewModel: ObservableObject {
         }
     }
     
+    func deleteItem(trip: String, itemName: String) async {
+        do{
+            let request = TripData.deleteItem(tripId: trip, item: itemName, user: userNumber)
+            guard let itemDeleted = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: TripInfo.self) else {
+                throw NetworkError.invalidResponse
+            }
+            if let tripIndex = self.requestedTrips?.firstIndex(where: { $0.tripId == itemDeleted.tripId }) {
+                self.requestedTrips?[tripIndex] = itemDeleted
+            }
+        } catch NetworkError.invalidURL {
+            print ("Dash invalid URL")
+        } catch NetworkError.invalidResponse {
+            print ("Dash invalid response")
+        } catch NetworkError.unauthorized {
+            AuthManager.shared.logout()
+        } catch {
+            print ("Dash unexpected error")
+        }
+    }
     
     private func socketListener () {
         socketService.socket.on("newHostedTrip"){ [weak self] data, _ in
@@ -211,6 +230,24 @@ class TripsViewModel: ObservableObject {
             
         }//update hosts UI with items a user added to a request
         
+        socketService.socket.on("itemDeleted"){ [weak self] data, _ in
+            guard let self else {return}
+            guard let updatedTripData = data.first as? [String: Any] else {return}
+            
+            do{
+                print("deleting item")
+                guard let updatedTrip = try socketService.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
+                if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == updatedTrip.tripId }) {
+                    self.hostedTrips?[tripIndex] = updatedTrip
+                }
+            } catch WebsocketError.decodingError {
+                print("websocket items decoding error")
+            } catch {
+                print("unexpected items websocket error")
+            }
+            
+        }//update hosts UI with items a user added to a request
+        
         socketService.socket.on("tripAccepted"){ [weak self] data, _ in
             guard let self else {return}
             guard let newTripData = data.first as? [String: Any] else {return}
@@ -239,21 +276,15 @@ class TripsViewModel: ObservableObject {
             guard let self else {print("self err"); return}
             guard let tripData = data.first as? [String: Any] else {print("data err"); return}
             let tripId = tripData["tripId"] as! String
-            do{
-                self.hostedTrips?.removeAll(where: { $0.tripId == tripId })
-                self.requestedTrips?.removeAll(where: { $0.tripId == tripId })
-                
-                if self.hostedTrips?.count == 0 {
-                    self.hostedTrips = nil
-                }
-                if self.requestedTrips?.count == 0 {
-                    self.requestedTrips = nil
-                }
-                
-            } catch WebsocketError.decodingError {
-                print("websocket trip decoding error")
-            } catch {
-                print("unexpected trip websocket error")
+            
+            self.hostedTrips?.removeAll(where: { $0.tripId == tripId })
+            self.requestedTrips?.removeAll(where: { $0.tripId == tripId })
+            
+            if self.hostedTrips?.count == 0 {
+                self.hostedTrips = nil
+            }
+            if self.requestedTrips?.count == 0 {
+                self.requestedTrips = nil
             }
         } //update trip array when a trip is accepted by the host
     }

@@ -48,6 +48,17 @@ struct TripData: Endpoint {
         )
     }
     
+    static func newRequestors(tripId: String, contacts: [ContactInfo]) -> TripData {
+        return TripData(
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            path: "add-requestors",
+            method: .post,
+            headers: ["Content-Type": "application/json"],
+            body: ["tripId": tripId,
+                   "contacts": contacts]
+        )
+    }
+    
     static func acceptTrip(tripId: String) -> TripData {
         return TripData(
             baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
@@ -67,4 +78,17 @@ struct TripData: Endpoint {
             body: ["tripId": tripId]
         )
     }
+    
+    static func deleteItem(tripId: String, item: String, user: String) -> TripData {
+        return TripData(
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            path: "delete-item",
+            method: .delete,
+            headers: ["Content-Type": "application/json"],
+            body: ["tripId": tripId,
+                    "item": item,
+                    "user": user]
+        )
+    }
+
 }

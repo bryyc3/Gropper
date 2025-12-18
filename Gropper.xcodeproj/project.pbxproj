@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7A5611DF2EEA0D0D000A4703 /* PhoneNumberKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7A5611DE2EEA0D0D000A4703 /* PhoneNumberKit */; };
+		7A5611E12EEA0D0D000A4703 /* PhoneNumberKit-Static in Frameworks */ = {isa = PBXBuildFile; productRef = 7A5611E02EEA0D0D000A4703 /* PhoneNumberKit-Static */; };
 		7A5A48282E871C8A0017EDDF /* SocketIO in Frameworks */ = {isa = PBXBuildFile; productRef = 7A5A48272E871C8A0017EDDF /* SocketIO */; };
 /* End PBXBuildFile section */
 
@@ -28,16 +30,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A5A48282E871C8A0017EDDF /* SocketIO in Frameworks */,
+				7A5611DF2EEA0D0D000A4703 /* PhoneNumberKit in Frameworks */,
+				7A5611E12EEA0D0D000A4703 /* PhoneNumberKit-Static in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7A49C4C02EE7745D00E59530 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7A76F4D62DA89E1900A3214E = {
 			isa = PBXGroup;
 			children = (
 				7A76F4E12DA89E1900A3214E /* Gropper */,
+				7A49C4C02EE7745D00E59530 /* Frameworks */,
 				7A76F4E02DA89E1900A3214E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -71,6 +83,8 @@
 			name = Gropper;
 			packageProductDependencies = (
 				7A5A48272E871C8A0017EDDF /* SocketIO */,
+				7A5611DE2EEA0D0D000A4703 /* PhoneNumberKit */,
+				7A5611E02EEA0D0D000A4703 /* PhoneNumberKit-Static */,
 			);
 			productName = Gropper;
 			productReference = 7A76F4DF2DA89E1900A3214E /* Gropper.app */;
@@ -102,6 +116,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				7A5A48262E871C8A0017EDDF /* XCRemoteSwiftPackageReference "socket" */,
+				7A5611DD2EEA0D0D000A4703 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7A76F4E02DA89E1900A3214E /* Products */;
@@ -260,6 +275,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Gropper/Gropper.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = KJA7M3H68Y;
@@ -278,6 +295,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.Gropper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -289,6 +307,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Gropper/Gropper.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = KJA7M3H68Y;
@@ -307,6 +327,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.Gropper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -337,6 +358,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		7A5611DD2EEA0D0D000A4703 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/PhoneNumberKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.1;
+			};
+		};
 		7A5A48262E871C8A0017EDDF /* XCRemoteSwiftPackageReference "socket" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/socketio/socket.io-client-swift";
@@ -348,6 +377,16 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		7A5611DE2EEA0D0D000A4703 /* PhoneNumberKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7A5611DD2EEA0D0D000A4703 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */;
+			productName = PhoneNumberKit;
+		};
+		7A5611E02EEA0D0D000A4703 /* PhoneNumberKit-Static */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7A5611DD2EEA0D0D000A4703 /* XCRemoteSwiftPackageReference "PhoneNumberKit" */;
+			productName = "PhoneNumberKit-Static";
+		};
 		7A5A48272E871C8A0017EDDF /* SocketIO */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7A5A48262E871C8A0017EDDF /* XCRemoteSwiftPackageReference "socket" */;

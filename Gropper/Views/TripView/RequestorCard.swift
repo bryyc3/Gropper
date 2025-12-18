@@ -20,13 +20,17 @@ struct RequestorCard: View {
                     if preview{
                         Image(uiImage: contactPhoto)
                             .resizable()
+                            .scaledToFill()
+                            .clipShape(Circle())
                             .position(x: -85, y: -2)
                             .frame(width: 35, height: 35)
                     } else {
                         Image(uiImage: contactPhoto)
                             .resizable()
-                            .position(x: -145)
-                            .frame(width: 45, height: 45)
+                            .scaledToFill()
+                            .clipShape(Circle())
+                            .position(x: -125)
+                            .frame(width: 55, height: 55)
                     }
                 } else {
                     if preview{
@@ -40,8 +44,8 @@ struct RequestorCard: View {
                         Image(systemName: "person.crop.circle.fill")
                             .resizable()
                             .renderingMode(.template)
-                            .position(x: -135)
-                            .frame(width: 45, height: 45)
+                            .position(x: -125)
+                            .frame(width: 55, height: 55)
                             .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                     }
                 }
