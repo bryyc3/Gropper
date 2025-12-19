@@ -17,15 +17,15 @@ struct StackedTripCards: View {
     
     var body: some View {
         ZStack{
-            ForEach(Array(trips.enumerated()), id: \.offset){index, trip in
+            ForEach(Array(trips.enumerated()), id: \.offset){index, tripInfo in
                 let visualIndex = (index - topCardIndex + trips.count) % trips.count
                 let progress = min(abs(dragOffset.height) / 150, 1)
                 let signedProgress = (dragOffset.height >= 0 ? 1 : -1) * progress
                 
                 VStack(spacing: 0){
                     VStack(alignment: .leading) {
-                        NavigationLink(destination: TripView(tripIndex: index, preview: .host)){
-                            Text(trip.location)
+                        NavigationLink(destination: HostedTripView(trip: tripInfo)){
+                            Text(tripInfo.location)
                                 .font(.system(size: 20, weight: .bold))
                                 .frame(alignment: .leading)
                                 .foregroundColor(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)))
@@ -37,7 +37,7 @@ struct StackedTripCards: View {
                     
                     ScrollView(.horizontal){
                         HStack{
-                            ForEach(trip.requestors, id: \.self.phoneNumber){user in
+                            ForEach(tripInfo.requestors, id: \.self.phoneNumber){user in
                                 LazyHStack{RequestorCard(requestor: user, preview: true)}
                             }
                         }

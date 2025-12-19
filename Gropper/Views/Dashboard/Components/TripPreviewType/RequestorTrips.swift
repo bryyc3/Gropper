@@ -14,9 +14,9 @@ struct RequestorTrips: View {
     var body: some View {
         ScrollView(.horizontal){
             LazyHStack{
-                ForEach(Array(trips.enumerated()), id: \.offset) {index, trip in
+                ForEach(Array(trips.enumerated()), id: \.offset) {index, tripInfo in
                     VStack{
-                        if let contactPhoto = imageData(info: trip.host.contactPhoto){
+                        if let contactPhoto = imageData(info: tripInfo.host.contactPhoto){
                             Image(uiImage: contactPhoto)
                                 .resizable()
                                 .frame(width: 35, height: 35)
@@ -29,15 +29,15 @@ struct RequestorTrips: View {
                                 .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                         }
                         VStack{
-                            Text(trip.location)
+                            Text(tripInfo.location)
                                 .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)))
-                            Text("Host: \(trip.host.contactName ?? trip.host.phoneNumber)")
+                            Text("Host: \(tripInfo.host.contactName ?? tripInfo.host.phoneNumber)")
                                 .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
                                 .fontWeight(.semibold)
                         }
                         
-                        NavigationLink(destination: TripView(tripIndex: index, preview: .request)){
+                        NavigationLink(destination: RequestedTripView(trip: tripInfo)){
                             Text("View Trip")
                                 .font(.system(size: 15, weight: .semibold))
                                 .padding(.horizontal, 55)
