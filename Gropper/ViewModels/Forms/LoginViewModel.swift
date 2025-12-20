@@ -28,16 +28,15 @@ class LoginViewModel: ObservableObject{
     
     func checkOtp() async {
         do{
-            let request = Authentication.verifyOtp(mobileNumber: user.phoneNumber, otp: user.otpCode)
+            guard let userPhoneNumber = try? NumberParse(number: user.phoneNumber) else {
+                throw NumberParseError.parseErr
+            }
+            let request = Authentication.verifyOtp(mobileNumber: userPhoneNumber, otp: user.otpCode)
             let tokens = try await NetworkManager.shared.execute(endpoint: request, auth: false, type: WebTokens.self) ?? WebTokens()
             
             guard let accessToken = tokens.accessToken, let refreshToken = tokens.refreshToken else {
                 throw NetworkError.decodingError
             }
-            guard let userPhoneNumber = try? NumberParse(number: user.phoneNumber) else {
-                throw NumberParseError.parseErr
-            }
-            print(userPhoneNumber)
             AuthManager.shared.login(accessToken: accessToken, refreshToken: refreshToken, phoneNumber: userPhoneNumber)
             resetUser()
         } catch NumberParseError.parseErr {

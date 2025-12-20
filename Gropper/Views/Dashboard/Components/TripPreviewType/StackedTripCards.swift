@@ -24,7 +24,7 @@ struct StackedTripCards: View {
                 
                 VStack(spacing: 0){
                     VStack(alignment: .leading) {
-                        NavigationLink(destination: HostedTripView(trip: tripInfo)){
+                        NavigationLink(destination: HostedTripView(tripIndex: index)){
                             Text(tripInfo.location)
                                 .font(.system(size: 20, weight: .bold))
                                 .frame(alignment: .leading)

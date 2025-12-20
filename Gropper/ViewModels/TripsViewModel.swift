@@ -152,6 +152,7 @@ class TripsViewModel: ObservableObject {
             }
             if let tripIndex = self.requestedTrips?.firstIndex(where: { $0.tripId == itemDeleted.tripId }) {
                 self.requestedTrips?[tripIndex] = itemDeleted
+                print("item deleted")
             }
         } catch NetworkError.invalidURL {
             print ("Dash invalid URL")
@@ -239,6 +240,9 @@ class TripsViewModel: ObservableObject {
                 guard let updatedTrip = try socketService.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
                 if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == updatedTrip.tripId }) {
                     self.hostedTrips?[tripIndex] = updatedTrip
+                    print("item deleted")
+                } else {
+                    print("failed")
                 }
             } catch WebsocketError.decodingError {
                 print("websocket items decoding error")
