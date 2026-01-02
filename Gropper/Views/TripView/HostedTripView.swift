@@ -10,11 +10,11 @@ import SwiftUI
 struct HostedTripView: View {
     @EnvironmentObject var model: TripsViewModel
     @State private var removeRequestorConfirmation: Bool = false
-    let tripIndex: Int
+    let tripViewInfo: TripInfo?
     
     var body: some View {
         NavigationView {
-            if let trip = model.confirmedHostedTrips?[tripIndex]{
+            if let trip = tripViewInfo{
                 VStack{
                     Text("Trip To \n \(trip.location)")
                         .font(.system(size: 40, weight: .bold))
@@ -75,6 +75,9 @@ struct HostedTripView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
+            }
+            else{
+                Text("Trip No Longer Exists")
             }
         }
     }

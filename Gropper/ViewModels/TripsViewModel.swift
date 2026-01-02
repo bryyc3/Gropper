@@ -217,19 +217,22 @@ class TripsViewModel: ObservableObject {
         socketService.socket.on("newTrip"){ [weak self] data, _ in
             guard let self else {return}
             guard let newTripData = data.first as? [String: Any] else {return}
-            do{
-                guard let newTrip = try socketService.handleData(receivedData: newTripData, type: TripInfo.self) else {return}
-                
-                if self.requestedTrips == nil {
-                    let newTripArray: [TripInfo] = [newTrip]
-                    self.requestedTrips = newTripArray
-                } else {self.requestedTrips?.append(newTrip)}
-                
-                socketService.socket.emit("joinTrip", newTrip.tripId!)
-            } catch WebsocketError.decodingError {
-                print("websocket trip decoding error")
-            } catch {
-                print("unexpected trip websocket error")
+            Task{
+                do{
+                    guard var newTrip = try self.socketService.handleData(receivedData: newTripData, type: TripInfo.self) else {return}
+                    newTrip.host = await self.retrieveContact(user: newTrip.host)
+                    
+                    if self.requestedTrips == nil {
+                        let newTripArray: [TripInfo] = [newTrip]
+                        self.requestedTrips = newTripArray
+                    } else {self.requestedTrips?.append(newTrip)}
+                    
+                    self.socketService.socket.emit("joinTrip", newTrip.tripId!)
+                } catch WebsocketError.decodingError {
+                    print("websocket trip decoding error")
+                } catch {
+                    print("unexpected trip websocket error")
+                }
             }
         }//when host creates a trip add it to requestors array and add requestor to trip room
         
@@ -238,15 +241,21 @@ class TripsViewModel: ObservableObject {
             guard let self else {return}
             guard let updatedTripData = data.first as? [String: Any] else {return}
             
-            do{
-                guard let updatedTrip = try socketService.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
-                if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == updatedTrip.tripId }) {
-                    self.hostedTrips?[tripIndex] = updatedTrip
+            Task{
+                do{
+                    guard var updatedTrip = try self.socketService.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
+                    for (requestorIndex, requestor) in updatedTrip.requestors.enumerated() {
+                        updatedTrip.requestors[requestorIndex] = await self.retrieveContact(user: requestor)
+                    }
+                    
+                    if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == updatedTrip.tripId }) {
+                        self.hostedTrips?[tripIndex] = updatedTrip
+                    }
+                } catch WebsocketError.decodingError {
+                    print("websocket items decoding error")
+                } catch {
+                    print("unexpected items websocket error")
                 }
-            } catch WebsocketError.decodingError {
-                print("websocket items decoding error")
-            } catch {
-                print("unexpected items websocket error")
             }
             
         }//update hosts UI with items a user added to a request
@@ -254,20 +263,25 @@ class TripsViewModel: ObservableObject {
         socketService.socket.on("itemDeleted"){ [weak self] data, _ in
             guard let self else {return}
             guard let updatedTripData = data.first as? [String: Any] else {return}
-            
-            do{
-                print("deleting item")
-                guard let updatedTrip = try socketService.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
-                if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == updatedTrip.tripId }) {
-                    self.hostedTrips?[tripIndex] = updatedTrip
-                    print("item deleted")
-                } else {
-                    print("failed")
+            Task{
+                do{
+                    print("deleting item")
+                    guard var updatedTrip = try self.socketService.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
+                    for (requestorIndex, requestor) in updatedTrip.requestors.enumerated() {
+                        updatedTrip.requestors[requestorIndex] = await self.retrieveContact(user: requestor)
+                    }
+                    
+                    if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == updatedTrip.tripId }) {
+                        self.hostedTrips?[tripIndex] = updatedTrip
+                        print("item deleted")
+                    } else {
+                        print("failed")
+                    }
+                } catch WebsocketError.decodingError {
+                    print("websocket items decoding error")
+                } catch {
+                    print("unexpected items websocket error")
                 }
-            } catch WebsocketError.decodingError {
-                print("websocket items decoding error")
-            } catch {
-                print("unexpected items websocket error")
             }
             
         }//update hosts UI with items a user added to a request
@@ -275,24 +289,29 @@ class TripsViewModel: ObservableObject {
         socketService.socket.on("tripAccepted"){ [weak self] data, _ in
             guard let self else {return}
             guard let newTripData = data.first as? [String: Any] else {return}
-            
-            do{
-                guard let newTrip = try socketService.handleData(receivedData: newTripData, type: TripInfo.self) else {return}
-                
-                if newTrip.host.phoneNumber == self.userNumber {
-                    if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == newTrip.tripId }) {
-                        self.hostedTrips?[tripIndex] = newTrip
-                    }
-                } else {
-                    if let tripIndex = self.requestedTrips?.firstIndex(where: { $0.tripId == newTrip.tripId }) {
-                        self.requestedTrips?[tripIndex] = newTrip
-                    }
-                }//determine which array (hosted or requested) to add the confirmed trip
-                
-            } catch WebsocketError.decodingError {
-                print("websocket trip decoding error")
-            } catch {
-                print("unexpected trip websocket error")
+            Task{
+                do{
+                    guard var newTrip = try self.socketService.handleData(receivedData: newTripData, type: TripInfo.self) else {return}
+                    
+                    if newTrip.host.phoneNumber == self.userNumber {
+                        for (requestorIndex, requestor) in newTrip.requestors.enumerated() {
+                            newTrip.requestors[requestorIndex] = await self.retrieveContact(user: requestor)
+                        }
+                        if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == newTrip.tripId }) {
+                            self.hostedTrips?[tripIndex] = newTrip
+                        }
+                    } else {
+                        newTrip.host = await self.retrieveContact(user: newTrip.host)
+                        if let tripIndex = self.requestedTrips?.firstIndex(where: { $0.tripId == newTrip.tripId }) {
+                            self.requestedTrips?[tripIndex] = newTrip
+                        }
+                    }//determine which array (hosted or requested) to add the confirmed trip
+                    
+                } catch WebsocketError.decodingError {
+                    print("websocket trip decoding error")
+                } catch {
+                    print("unexpected trip websocket error")
+                }
             }
         }
         
