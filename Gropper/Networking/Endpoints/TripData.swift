@@ -79,6 +79,17 @@ struct TripData: Endpoint {
         )
     }
     
+    static func removeRequestor(requestor: String, tripId: String) -> TripData {
+        return TripData(
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            path: "remove-requestor",
+            method: .delete,
+            headers: ["Content-Type": "application/json"],
+            body: ["requestor": requestor,
+                   "tripId": tripId]
+        )
+    }
+    
     static func deleteItem(tripId: String, item: String, user: String) -> TripData {
         return TripData(
             baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,

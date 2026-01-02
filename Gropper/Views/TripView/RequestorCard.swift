@@ -62,9 +62,7 @@ struct RequestorCard: View {
                         .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                         .lineLimit(1)
                         .truncationMode(.tail)
-                        
                 }
-                
             }
             .frame(width: 200)
             

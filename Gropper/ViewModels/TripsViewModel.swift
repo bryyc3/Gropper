@@ -144,6 +144,26 @@ class TripsViewModel: ObservableObject {
         }
     }
     
+    func removeRequestor(requestorInfo: String, trip: String) async {
+        do{
+            let request = TripData.removeRequestor(requestor: requestorInfo, tripId: trip)
+            guard let requestorRemoved = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else {
+                throw NetworkError.invalidResponse
+            }
+            if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == trip}) {
+                self.hostedTrips?[tripIndex].requestors.removeAll(where: {$0.phoneNumber == requestorInfo})
+            }
+        } catch NetworkError.invalidURL {
+            print ("Dash invalid URL")
+        } catch NetworkError.invalidResponse {
+            print ("Dash invalid response")
+        } catch NetworkError.unauthorized {
+            AuthManager.shared.logout()
+        } catch {
+            print ("Dash unexpected error")
+        }
+    }
+    
     func deleteItem(trip: String, itemName: String) async {
         do{
             let request = TripData.deleteItem(tripId: trip, item: itemName, user: userNumber)

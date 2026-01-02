@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HostedTripView: View {
     @EnvironmentObject var model: TripsViewModel
+    @State private var removeRequestorConfirmation: Bool = false
     let tripIndex: Int
     
     var body: some View {
@@ -31,7 +32,30 @@ struct HostedTripView: View {
                         ForEach(trip.requestors, id: \.phoneNumber){requestor in
                             RequestorCard(requestor: requestor, preview: false)
                                 .padding()
+                                .confirmationDialog("Are you sure you want to remove this requestor?", isPresented: $removeRequestorConfirmation) {
+                                    Button("Remove Requestor", role: .destructive) {
+                                        if (trip.requestors.count > 1){
+                                            Task{await model.removeRequestor(requestorInfo: requestor.phoneNumber, trip: trip.tripId!)}
+                                        } else {
+                                            print("cant remove")
+                                        }
+                                    }
+                                } message: {
+                                    Text("Are you sure you want to remove this requestor?")
+                                }
+                            Button{
+                                removeRequestorConfirmation.toggle()
+                                print(removeRequestorConfirmation)
+                            } label: {
+                                Image(systemName: "minus.circle.fill")
+                                    .resizable()
+                                    .renderingMode(.template)
+                                    .frame(width: 30, height: 30)
+                                    .foregroundColor(Color(#colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)))
+                            }
+                            .offset(x: 160, y: -45)
                         }
+                        
                     }
                     Button("Finish Trip") {
                         Task{
