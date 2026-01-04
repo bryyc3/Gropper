@@ -139,6 +139,7 @@ struct RequestorCard: View {
                             .padding()
                         }
                         .frame(maxWidth: .infinity, minHeight: 95)
+                        
                     } else {
                         Text("No Items Requested")
                             .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))

@@ -150,8 +150,10 @@ class TripsViewModel: ObservableObject {
             guard let requestorRemoved = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else {
                 throw NetworkError.invalidResponse
             }
-            if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == trip}) {
-                self.hostedTrips?[tripIndex].requestors.removeAll(where: {$0.phoneNumber == requestorInfo})
+            if requestorRemoved {
+                if let tripIndex = self.hostedTrips?.firstIndex(where: { $0.tripId == trip}) {
+                    self.hostedTrips?[tripIndex].requestors.removeAll(where: {$0.phoneNumber == requestorInfo})
+                }
             }
         } catch NetworkError.invalidURL {
             print ("Dash invalid URL")

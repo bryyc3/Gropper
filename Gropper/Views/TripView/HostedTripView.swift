@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HostedTripView: View {
     @EnvironmentObject var model: TripsViewModel
+    @State private var selectedRequestor: ContactInfo?
     @State private var removeRequestorConfirmation: Bool = false
     let tripViewInfo: TripInfo?
     
@@ -32,20 +33,25 @@ struct HostedTripView: View {
                         ForEach(trip.requestors, id: \.phoneNumber){requestor in
                             RequestorCard(requestor: requestor, preview: false)
                                 .padding()
-                                .confirmationDialog("Are you sure you want to remove this requestor?", isPresented: $removeRequestorConfirmation) {
+                                .popover(isPresented: Binding(
+                                    get: { selectedRequestor?.phoneNumber == requestor.phoneNumber && removeRequestorConfirmation },
+                                    set: { removeRequestorConfirmation = $0 }
+                                )) {
                                     Button("Remove Requestor", role: .destructive) {
                                         if (trip.requestors.count > 1){
                                             Task{await model.removeRequestor(requestorInfo: requestor.phoneNumber, trip: trip.tripId!)}
+                                            selectedRequestor = nil
+                                            removeRequestorConfirmation.toggle()
                                         } else {
                                             print("cant remove")
                                         }
                                     }
-                                } message: {
-                                    Text("Are you sure you want to remove this requestor?")
+                                    .padding()
+                                    .presentationCompactAdaptation(.popover)
                                 }
                             Button{
+                                selectedRequestor = requestor
                                 removeRequestorConfirmation.toggle()
-                                print(removeRequestorConfirmation)
                             } label: {
                                 Image(systemName: "minus.circle.fill")
                                     .resizable()
