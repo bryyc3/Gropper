@@ -18,9 +18,8 @@ struct PendingTripsView: View {
                 PendingPreview(previewType: .request, tripData: viewModel.pendingRequestedTrips)
                     .padding(7)
             }
-            
         }
-        .padding(7)
+        .padding(.top, 50)
         .scrollIndicators(ScrollIndicatorVisibility.never)
         .defaultScrollAnchor(.center, for: .alignment)
         .refreshable {

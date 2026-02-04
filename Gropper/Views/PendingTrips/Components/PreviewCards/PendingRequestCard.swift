@@ -25,12 +25,14 @@ struct PendingRequestCard: View {
                                 Image(uiImage: contactPhoto)
                                     .resizable()
                                     .frame(width: 45, height: 45)
+                                    .padding(.top, 5)
                             } else {
                                 Image(systemName: "person.crop.circle.fill")
                                     .resizable()
                                     .renderingMode(.template)
                                     .frame(width: 45, height: 45)
                                     .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                                    .padding(.top, 5)
                             }
                             Text("Host:\n\(trip.host.contactName ?? trip.host.phoneNumber)")
                                 .foregroundColor(Color(#colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)))
@@ -47,7 +49,7 @@ struct PendingRequestCard: View {
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                                         .padding(5)
-                                    if let user = trip.requestors.first(where: {$0.phoneNumber == "5"}){
+                                    if let user = trip.requestors.first(where: {$0.phoneNumber == model.userNumber}){
                                         ScrollView(.vertical) {
                                             if let items = user.itemsRequested{
                                                 FlowLayout(spacing: 10){
@@ -97,7 +99,7 @@ struct PendingRequestCard: View {
                         .background(RoundedRectangle(cornerRadius: 25)
                             .fill(Gradient(colors: colorScheme))
                             .shadow(radius: 7))
-                        .padding()
+                        .frame(height: 350)
                     }
                 }
             }
@@ -105,6 +107,7 @@ struct PendingRequestCard: View {
         }
         .contentMargins(12, for: .scrollContent)
         .scrollTargetBehavior(.viewAligned)
+        .frame(height: 350)
     }
 }
 

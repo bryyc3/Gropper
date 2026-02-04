@@ -11,6 +11,8 @@ struct HostedTripView: View {
     @EnvironmentObject var model: TripsViewModel
     @State private var selectedRequestor: ContactInfo?
     @State private var removeRequestorConfirmation: Bool = false
+    @State private var deleteTripConfirmation: Bool = false
+    @Environment(\.dismiss) var dismiss
     let tripViewInfo: TripInfo?
     
     var body: some View {
@@ -64,9 +66,22 @@ struct HostedTripView: View {
                         
                     }
                     Button("Finish Trip") {
-                        Task{
-                            await model.deleteTrip(trip: trip.tripId!)
+                        deleteTripConfirmation.toggle()
+                    }
+                    .popover(isPresented: Binding(
+                        get: { deleteTripConfirmation },
+                        set: { deleteTripConfirmation = $0 }
+                    )) {
+                        Button("Delete Trip", role: .destructive) {
+                            Task{
+                                let tripDeleted = await model.deleteTrip(trip: trip.tripId!)
+                                if tripDeleted {
+                                    dismiss()
+                                }
+                            }
                         }
+                        .padding()
+                        .presentationCompactAdaptation(.popover)
                     }
                     .toolbar{
                         ToolbarItem(placement: .confirmationAction){

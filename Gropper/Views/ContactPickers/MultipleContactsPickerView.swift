@@ -44,6 +44,7 @@ struct MultipleContactsPickerView: UIViewControllerRepresentable {
                 }
                 self.parent.onSelectContacts(contactsArray)
             }
+            
         }
     }
 }

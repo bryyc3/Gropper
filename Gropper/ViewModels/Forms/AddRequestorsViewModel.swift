@@ -45,13 +45,13 @@ class AddRequestorsViewModel: NSObject, ObservableObject {
         } catch NumberParseError.parseErr{
             print("Number Parse Error")
         } catch NetworkError.invalidURL {
-            print ("add items invalid URL")
+            print ("add req invalid URL")
         } catch NetworkError.invalidResponse {
-            print ("add items invalid response")
+            print ("add req invalid response")
         } catch NetworkError.unauthorized{
             AuthManager.shared.logout()
         } catch {
-            print ("add items unexpected error")
+            print ("add req unexpected error")
         }
     }
 }

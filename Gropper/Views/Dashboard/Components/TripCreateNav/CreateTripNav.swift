@@ -51,7 +51,8 @@ struct CreateTripNav: View {
                     ])
                 )
         )
-        .padding(.vertical, 50)
+        .padding(.vertical, 20)
+        .frame(maxHeight: 250)
     }
 
     private func headerItem(title: String, page: Page) -> some View {

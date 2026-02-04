@@ -8,6 +8,7 @@
 import Foundation
 import Contacts
 import SwiftUI
+import UserNotifications
 
 @MainActor
 class TripsViewModel: ObservableObject {
@@ -32,7 +33,17 @@ class TripsViewModel: ObservableObject {
         userNumber = phoneNumber
         socketListener()
         Task{
-             await retrieveTrips()
+            do {
+                let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge])
+                if granted {
+                    await MainActor.run {
+                        UIApplication.shared.registerForRemoteNotifications()
+                    }
+                }
+                await retrieveTrips()
+            } catch {
+                print("notification access request err")
+            }
         }
     }
     
@@ -47,6 +58,7 @@ class TripsViewModel: ObservableObject {
                         for (requestorIndex, requestor) in tripsHosted[tripIndex].requestors.enumerated() {
                             tripsHosted[tripIndex].requestors[requestorIndex] = await retrieveContact(user: requestor)
                         }
+                        socketService.socket.emit("joinTrip", tripsHosted[tripIndex].tripId!)
                     }
                     self.hostedTrips = tripsHosted
                 } else {
@@ -56,6 +68,7 @@ class TripsViewModel: ObservableObject {
                 if var tripsRequested = trips.requestedTripData {
                     for (tripIndex, trip) in tripsRequested.enumerated() {
                         tripsRequested[tripIndex].host = await retrieveContact(user: trip.host)
+                        socketService.socket.emit("joinTrip", trip.tripId!)
                     }
                     self.requestedTrips = tripsRequested
                 } else {
@@ -124,23 +137,28 @@ class TripsViewModel: ObservableObject {
         
     }
     
-    func deleteTrip(trip: String) async {
+    func deleteTrip(trip: String) async -> Bool{
         do{
             let request = TripData.deleteTrip(tripId: trip)
-            guard let tripDeleted = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else {
-                throw NetworkError.invalidResponse
+            guard let tripDeleted = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else { throw NetworkError.invalidResponse
             }
+            
             if tripDeleted {
-                print("trip deleted")
+                self.hostedTrips?.removeAll(where: { $0.tripId == trip })
             }
+            return tripDeleted
         } catch NetworkError.invalidURL {
             print ("Dash invalid URL")
+            return false
         } catch NetworkError.invalidResponse {
             print ("Dash invalid response")
+            return false
         } catch NetworkError.unauthorized {
             AuthManager.shared.logout()
+            return false
         } catch {
             print ("Dash unexpected error")
+            return false
         }
     }
     
@@ -199,7 +217,7 @@ class TripsViewModel: ObservableObject {
         socketService.socket.on("newRequest"){ [weak self] data, _ in
             guard let self else {return}
             guard let newRequestedTrip = data.first as? [String: Any] else {return}
-            
+            print("running new req")
             do{
                 guard let newTrip = try socketService.handleData(receivedData: newRequestedTrip, type: TripInfo.self) else {return}
                 
@@ -210,30 +228,30 @@ class TripsViewModel: ObservableObject {
                 
                 socketService.socket.emit("joinTrip", newTrip.tripId!)
             } catch WebsocketError.decodingError {
-                print("websocket trip decoding error")
+                print("websocket new req decoding error")
             } catch {
-                print("unexpected trip websocket error")
+                print("unexpected new req websocket error")
             }
         }//when requestor requests a trip, add trip to hosted trip and have host join room for requested trip
         
         socketService.socket.on("newTrip"){ [weak self] data, _ in
             guard let self else {return}
             guard let newTripData = data.first as? [String: Any] else {return}
+            print("adding trip")
             Task{
                 do{
                     guard var newTrip = try self.socketService.handleData(receivedData: newTripData, type: TripInfo.self) else {return}
                     newTrip.host = await self.retrieveContact(user: newTrip.host)
                     
                     if self.requestedTrips == nil {
-                        let newTripArray: [TripInfo] = [newTrip]
-                        self.requestedTrips = newTripArray
+                        self.requestedTrips = [newTrip]
                     } else {self.requestedTrips?.append(newTrip)}
                     
                     self.socketService.socket.emit("joinTrip", newTrip.tripId!)
                 } catch WebsocketError.decodingError {
-                    print("websocket trip decoding error")
+                    print("websocket new trip decoding error")
                 } catch {
-                    print("unexpected trip websocket error")
+                    print("unexpected new trip websocket error")
                 }
             }
         }//when host creates a trip add it to requestors array and add requestor to trip room
@@ -280,9 +298,9 @@ class TripsViewModel: ObservableObject {
                         print("failed")
                     }
                 } catch WebsocketError.decodingError {
-                    print("websocket items decoding error")
+                    print("websocket items deleted decoding error")
                 } catch {
-                    print("unexpected items websocket error")
+                    print("unexpected items deleted websocket error")
                 }
             }
             
@@ -291,6 +309,7 @@ class TripsViewModel: ObservableObject {
         socketService.socket.on("tripAccepted"){ [weak self] data, _ in
             guard let self else {return}
             guard let newTripData = data.first as? [String: Any] else {return}
+            print("running accepted trip")
             Task{
                 do{
                     guard var newTrip = try self.socketService.handleData(receivedData: newTripData, type: TripInfo.self) else {return}
@@ -317,21 +336,18 @@ class TripsViewModel: ObservableObject {
             }
         }
         
-        socketService.socket.on("tripDeleted"){ [weak self] data, _ in
+        socketService.socket.on("tripDeleted") { [weak self] data, _ in
             guard let self else {print("self err"); return}
             guard let tripData = data.first as? [String: Any] else {print("data err"); return}
             let tripId = tripData["tripId"] as! String
             
-            self.hostedTrips?.removeAll(where: { $0.tripId == tripId })
             self.requestedTrips?.removeAll(where: { $0.tripId == tripId })
             
-            if self.hostedTrips?.count == 0 {
-                self.hostedTrips = nil
-            }
             if self.requestedTrips?.count == 0 {
                 self.requestedTrips = nil
             }
-        } //update trip array when a trip is accepted by the host
+            print("trip socket deleted")
+        } //update trip array when a trip is deleted
     }
 }
 

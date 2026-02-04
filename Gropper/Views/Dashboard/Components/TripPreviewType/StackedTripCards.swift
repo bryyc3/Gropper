@@ -42,11 +42,11 @@ struct StackedTripCards: View {
                             }
                         }
                         .offset(y: -2)
-                        .padding()
+                        .padding(5)
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 25))
-                    .padding(7)
-                    .frame(height: 140)
+                    .frame(width: 270, height: 140)
+                    .padding(.leading, -40)
                 }
                 .background(RoundedRectangle(cornerRadius: 25)
                                 .fill(Gradient(colors: colorScheme))
@@ -97,8 +97,6 @@ struct StackedTripCards: View {
                 )
             }
         }
-        .padding(.top, 7)
-        .padding(.bottom, 13)
     }
 }
 

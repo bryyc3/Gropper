@@ -17,9 +17,7 @@ struct DashboardView: View {
                 ScrollView(.vertical){
                     VStack{
                         TripPreview(previewType: .host, tripData: viewModel.confirmedHostedTrips)
-                            .padding(7)
                         TripPreview(previewType: .request, tripData: viewModel.confirmedRequestedTrips)
-                            .padding(7)
                         Button("Logout"){
                             AuthManager.shared.logout()
                         }

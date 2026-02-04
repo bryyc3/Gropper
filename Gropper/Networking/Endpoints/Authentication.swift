@@ -43,4 +43,15 @@ struct Authentication: Endpoint {
             headers: ["Authorization": token]
         )
     }
+    
+    static func allowNotifications(phoneNumber: String, token: String) -> Authentication {
+        return Authentication(
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            path: "allow-notifications",
+            method: .post,
+            headers: ["Content-Type": "application/json"],
+            body: ["userNumber": phoneNumber,
+                   "userToken": token]
+        )
+    }
 }

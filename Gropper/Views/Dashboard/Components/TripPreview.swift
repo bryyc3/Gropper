@@ -46,7 +46,7 @@ struct TripPreview: View {
                 .padding(.bottom, 100)
             }
         }
-        
+        .padding()
     }
 }
 
