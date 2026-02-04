@@ -8,14 +8,14 @@
 import SwiftUI
 
 struct PendingTripsView: View {
-    @StateObject var viewModel = TripsViewModel()
+    @ObservedObject var model: TripsViewModel
     
     var body: some View {
         ScrollView(.vertical){
             VStack{
-                PendingPreview(previewType: .host, tripData: viewModel.pendingHostedTrips)
+                PendingPreview(previewType: .host, tripData: model.pendingHostedTrips)
                     .padding(7)
-                PendingPreview(previewType: .request, tripData: viewModel.pendingRequestedTrips)
+                PendingPreview(previewType: .request, tripData: model.pendingRequestedTrips)
                     .padding(7)
             }
         }
@@ -24,13 +24,8 @@ struct PendingTripsView: View {
         .defaultScrollAnchor(.center, for: .alignment)
         .refreshable {
             Task{
-                await viewModel.retrieveTrips()
+                await model.retrieveTrips()
             }
         }
-        .environmentObject(viewModel)
     }
-}
-
-#Preview {
-    PendingTripsView()
 }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 @MainActor
 class AuthManager {
     static let shared = AuthManager()

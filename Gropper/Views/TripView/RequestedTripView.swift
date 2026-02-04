@@ -15,7 +15,6 @@ struct RequestedTripView: View {
     let columns = [GridItem(.flexible(minimum: 0, maximum: 20))]
     
     var body: some View {
-        NavigationView{
             VStack{
                 Text("Trip To \n \(trip.location)")
                     .font(.system(size: 40, weight: .bold))
@@ -85,6 +84,5 @@ struct RequestedTripView: View {
                 .padding(.vertical)
             }
             .padding()
-        }
     }
 }

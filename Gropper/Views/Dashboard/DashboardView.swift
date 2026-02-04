@@ -8,16 +8,16 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @StateObject var viewModel = TripsViewModel()
+    @ObservedObject var model: TripsViewModel
     
     var body: some View {
-        NavigationView{
+        NavigationStack{
             VStack{
                 CreateTripNav()
                 ScrollView(.vertical){
                     VStack{
-                        TripPreview(previewType: .host, tripData: viewModel.confirmedHostedTrips)
-                        TripPreview(previewType: .request, tripData: viewModel.confirmedRequestedTrips)
+                        TripPreview(previewType: .host, tripData: model.confirmedHostedTrips)
+                        TripPreview(previewType: .request, tripData: model.confirmedRequestedTrips)
                         Button("Logout"){
                             AuthManager.shared.logout()
                         }
@@ -26,16 +26,11 @@ struct DashboardView: View {
                 .scrollIndicators(ScrollIndicatorVisibility.never)
                 .refreshable {
                     Task{
-                        await viewModel.retrieveTrips()
+                        await model.retrieveTrips()
                     }
                 }
             }
             .padding(7)
         }
-        .environmentObject(viewModel)
     }
-}
-
-#Preview {
-    DashboardView()
 }

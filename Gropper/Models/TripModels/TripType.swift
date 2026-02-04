@@ -60,9 +60,9 @@ enum TripType {
     var dashColorScheme: [Color] {
         switch self {
             case .host:
-            return [Color(#colorLiteral(red: 0.8416427374, green: 0.8715619445, blue: 0.9481450915, alpha: 1)),Color(#colorLiteral(red: 0.5456431508, green: 0.6622825265, blue: 0.8428704143, alpha: 1))]
-        case .request:
-            return [Color(#colorLiteral(red: 0.8366934657, green: 0.7335241437, blue: 0.8978629708, alpha: 1)),Color(#colorLiteral(red: 0.6828602552, green: 0.4983463287, blue: 0.9405499697, alpha: 1))]
+                return [Color(#colorLiteral(red: 0.8416427374, green: 0.8715619445, blue: 0.9481450915, alpha: 1)),Color(#colorLiteral(red: 0.5456431508, green: 0.6622825265, blue: 0.8428704143, alpha: 1))]
+            case .request:
+                return [Color(#colorLiteral(red: 0.8366934657, green: 0.7335241437, blue: 0.8978629708, alpha: 1)),Color(#colorLiteral(red: 0.6828602552, green: 0.4983463287, blue: 0.9405499697, alpha: 1))]
         }
     }
     
@@ -78,9 +78,9 @@ enum TripType {
     var pendingColorScheme: [Color] {
         switch self {
             case .host:
-            return [Color(#colorLiteral(red: 0.9437078834, green: 0.9155449867, blue: 0.7168241143, alpha: 1)),Color(#colorLiteral(red: 0.9474748969, green: 0.7237170935, blue: 0.3979578018, alpha: 1))]
-        case .request:
-            return [Color(#colorLiteral(red: 0.4823876619, green: 0.7830454111, blue: 0.7319081426, alpha: 1)),Color(#colorLiteral(red: 0.07159397751, green: 0.5963256359, blue: 0.5612158775, alpha: 1))]
+                return [Color(#colorLiteral(red: 0.9437078834, green: 0.9155449867, blue: 0.7168241143, alpha: 1)),Color(#colorLiteral(red: 0.9474748969, green: 0.7237170935, blue: 0.3979578018, alpha: 1))]
+            case .request:
+                return [Color(#colorLiteral(red: 0.4823876619, green: 0.7830454111, blue: 0.7319081426, alpha: 1)),Color(#colorLiteral(red: 0.07159397751, green: 0.5963256359, blue: 0.5612158775, alpha: 1))]
         }
     }
 }
