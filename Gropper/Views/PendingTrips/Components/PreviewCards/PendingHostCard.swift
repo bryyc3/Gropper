@@ -38,10 +38,9 @@ struct PendingHostCard: View {
                                 .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
                                 .font(.system(size: 15, weight: .bold))
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                            Text("Trip To \(trip.location)")
+                            Text("Trip to: \n\(trip.location)")
                                 .font(.system(size: 20, weight: .bold))
                                 .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
-                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .padding(3)
                         
@@ -70,7 +69,7 @@ struct PendingHostCard: View {
                         }
                         .padding(10)
                     }
-                    .frame(height: 120)
+                    .frame(width: 300, height: 120)
                     .background(RoundedRectangle(cornerRadius: 25)
                         .fill(Gradient(colors: colorScheme))
                         .shadow(radius: 7))

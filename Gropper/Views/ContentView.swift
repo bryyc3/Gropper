@@ -29,7 +29,7 @@ struct ContentView: View {
                 }
             }
             else{
-                LoginView()
+                IntroView()
             }
         }
         .onReceive(NotificationCenter.default.publisher(for: .login)){_ in

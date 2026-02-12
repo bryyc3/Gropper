@@ -90,7 +90,7 @@ struct TripData: Endpoint {
         )
     }
     
-    static func deleteItem(tripId: String, item: String, user: String) -> TripData {
+    static func deleteItem(tripId: String, item: String, user: String, itemsCount: Int) -> TripData {
         return TripData(
             baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
             path: "delete-item",
@@ -98,7 +98,8 @@ struct TripData: Endpoint {
             headers: ["Content-Type": "application/json"],
             body: ["tripId": tripId,
                     "item": item,
-                    "user": user]
+                    "user": user,
+                    "itemsCount": itemsCount]
         )
     }
 

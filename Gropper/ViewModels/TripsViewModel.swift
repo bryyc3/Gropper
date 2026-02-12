@@ -184,9 +184,9 @@ class TripsViewModel: ObservableObject {
         }
     }
     
-    func deleteItem(trip: String, itemName: String) async {
+    func deleteItem(trip: String, itemName: String, itemsAmount: Int) async {
         do{
-            let request = TripData.deleteItem(tripId: trip, item: itemName, user: userNumber)
+            let request = TripData.deleteItem(tripId: trip, item: itemName, user: userNumber, itemsCount: itemsAmount)
             guard let itemDeleted = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: TripInfo.self) else {
                 throw NetworkError.invalidResponse
             }

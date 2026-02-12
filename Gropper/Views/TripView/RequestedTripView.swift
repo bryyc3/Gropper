@@ -60,7 +60,7 @@ struct RequestedTripView: View {
                                                     Text(item.itemDescription)
                                                         .padding(.bottom, 8)
                                                     
-                                                    Button("Delete Item") {Task{await model.deleteItem(trip: trip.tripId!, itemName: item.itemName)}}
+                                                    Button("Delete Item") {Task{await model.deleteItem(trip: trip.tripId!, itemName: item.itemName, itemsAmount: items.count)}}
                                                     
                                                     Button("Close") { itemPopover = false }
                                                 }
