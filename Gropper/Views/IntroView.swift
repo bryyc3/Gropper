@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct IntroView: View {
     var body: some View {
         NavigationStack {
@@ -20,8 +21,12 @@ struct IntroView: View {
                         .foregroundColor(Color(#colorLiteral(red: 0.476929307, green: 0.8514011502, blue: 0.6683226228, alpha: 1)))
                     VStack{
                         Text("Make Life A Little Easier")
-                        Text("Let friends and family know where you're heading and you can pick up stuff they need")
-                        Text("Request for friends or family to pick up items you need from a specific location.")
+                        TabView {
+                            LottieAnimationView(name: "HostAnimation.json", subText: "Let friends and family know where you're heading and you can pick up stuff they need")
+                            LottieAnimationView(name: "RequestAnimation.json", subText: "Request for friends or family to pick up items you need from a specific location.")
+                        }
+                        .tabViewStyle(.page(indexDisplayMode: .automatic))
+                        .frame(height: 480)
                     }
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.white)
@@ -29,7 +34,7 @@ struct IntroView: View {
                     NavigationLink("Get Started", destination: LoginView())
                         .font(.system(size: 15, weight: .semibold))
                         .padding(.horizontal, 45)
-                        .padding(.vertical, 5)
+                        .padding(.vertical, 15)
                         .foregroundColor(.white)
                         .background(Color(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)))
                         .cornerRadius(50)
