@@ -14,7 +14,7 @@ struct OtpView: View {
     @State private var attemptsRemaining = 5
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack{
                 TextField("Enter OTP", text: $otpViewModel.user.otpCode)
                     .multilineTextAlignment(.center)

@@ -59,7 +59,7 @@ struct RequestorTrips: View {
         }
         .contentMargins(12, for: .scrollContent)
         .scrollTargetBehavior(.viewAligned)
-        .frame(height: 170)
+        .frame(maxWidth: 600, maxHeight: 170)
         .padding(7)
         .background(RoundedRectangle(cornerRadius: 25)
             .fill(Gradient(colors: colorScheme))

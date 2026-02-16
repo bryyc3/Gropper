@@ -9,6 +9,7 @@ import SwiftUI
 
 struct DashboardView: View {
     @ObservedObject var model: TripsViewModel
+    @State private var logout = false
     
     var body: some View {
         NavigationStack{
@@ -18,8 +19,16 @@ struct DashboardView: View {
                     VStack{
                         TripPreview(previewType: .host, tripData: model.confirmedHostedTrips)
                         TripPreview(previewType: .request, tripData: model.confirmedRequestedTrips)
-                        Button("Logout"){
-                            AuthManager.shared.logout()
+                        
+                        Button("Logout") {
+                            logout.toggle()
+                        }
+                        .confirmationDialog("Are you sure you want to cancel this request?", isPresented: $logout) {
+                            Button("Logout", role: .destructive) {
+                                AuthManager.shared.logout()
+                            }
+                        } message: {
+                            Text("Are you sure you want to logout?")
                         }
                     }
                 }

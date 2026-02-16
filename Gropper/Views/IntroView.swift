@@ -31,13 +31,16 @@ struct IntroView: View {
                     .font(.system(size: 20, weight: .semibold))
                     .foregroundColor(.white)
                     
-                    NavigationLink("Get Started", destination: LoginView())
-                        .font(.system(size: 15, weight: .semibold))
-                        .padding(.horizontal, 45)
-                        .padding(.vertical, 15)
-                        .foregroundColor(.white)
+                    NavigationLink(destination: LoginView()){
+                        Text("Get Started")
+                            .font(.system(size: 15, weight: .semibold))
+                            .padding(.horizontal, 45)
+                            .padding(.vertical, 15)
+                            .foregroundColor(.white)
+                    }
                         .background(Color(#colorLiteral(red: 0.2392156869, green: 0.6745098233, blue: 0.9686274529, alpha: 1)))
                         .cornerRadius(50)
+                        
                 }
             }
         }

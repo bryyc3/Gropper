@@ -51,7 +51,7 @@ struct StackedTripCards: View {
                 .background(RoundedRectangle(cornerRadius: 25)
                                 .fill(Gradient(colors: colorScheme))
                                 .shadow(radius: visualIndex == 0 ? 7 : CGFloat(visualIndex) * 3))
-                .frame(height: 170)
+                .frame(maxWidth: 600, maxHeight: 170)
                 .offset(x: visualIndex == 0 ? 0 : CGFloat(visualIndex) * 3, y: visualIndex == 0 ? dragOffset.height : CGFloat(visualIndex) * 12)
                 .scaleEffect(1 - CGFloat(visualIndex) * 0.05)
                 .zIndex(Double(trips.count - visualIndex))
