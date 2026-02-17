@@ -26,17 +26,20 @@ struct OtpView: View {
                             .stroke(Color(#colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1)), lineWidth: 2)
                     )
                     .padding()
-                Button("Login") {
+                Button {
                     Task{
                         if(attemptsRemaining > 0) {
                             await otpViewModel.checkOtp()
                             attemptsRemaining -= 1
                         }
                     }
+                } label: {
+                    Text("Login")
+                        .font(.system(size: 15, weight: .semibold))
+                        .padding(.horizontal, 45)
+                        .padding(.vertical, 5)
+                        
                 }
-                .font(.system(size: 15, weight: .semibold))
-                .padding(.horizontal, 45)
-                .padding(.vertical, 5)
                 .foregroundColor(.white)
                 .background(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                 .cornerRadius(50)

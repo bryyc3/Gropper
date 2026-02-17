@@ -13,6 +13,19 @@
 		7A20E4D42F402EA000032820 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 7A20E4D32F402EA000032820 /* Lottie */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		7A9BD8082F44F5E800324DE0 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		7A76F4DF2DA89E1900A3214E /* Gropper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gropper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -74,6 +87,7 @@
 				7A76F4DB2DA89E1900A3214E /* Sources */,
 				7A76F4DC2DA89E1900A3214E /* Frameworks */,
 				7A76F4DD2DA89E1900A3214E /* Resources */,
+				7A9BD8082F44F5E800324DE0 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

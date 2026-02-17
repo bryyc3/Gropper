@@ -24,8 +24,10 @@ struct DashboardView: View {
                             logout.toggle()
                         }
                         .confirmationDialog("Are you sure you want to cancel this request?", isPresented: $logout) {
-                            Button("Logout", role: .destructive) {
+                            Button(role: .destructive) {
                                 AuthManager.shared.logout()
+                            } label: {
+                                Text("Logout")
                             }
                         } message: {
                             Text("Are you sure you want to logout?")
@@ -41,5 +43,6 @@ struct DashboardView: View {
             }
             .padding(7)
         }
+        .onAppear{model.userLoggedIn()}
     }
 }
