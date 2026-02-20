@@ -57,6 +57,12 @@ struct OtpView: View {
                             }
                         }
                 }
+                if otpViewModel.user.otpGenerated == false {
+                    Text("There was an error trying to generate your OTP, please go back and try again")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundColor(.red)
+                        .padding()
+                }
             }
         }
         .navigationBarBackButtonHidden(backButtonDisabled)

@@ -16,8 +16,8 @@ struct Authentication: Endpoint {
     
     static func sendOtp(mobileNumber: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
-            path: "simulate-otp",
+            baseUrl: URL(string: "https://gropper-api-production.up.railway.app/")!,
+            path: "generate-otp",
             method: .post,
             headers: ["Content-Type": "application/json"],
             body: ["phoneNumber": mobileNumber]
@@ -26,8 +26,8 @@ struct Authentication: Endpoint {
     
     static func verifyOtp(mobileNumber: String, otp: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
-            path: "simulate-otp-verification",
+            baseUrl: URL(string: "https://gropper-api-production.up.railway.app/")!,
+            path: "verify-otp",
             method: .post,
             headers: ["Content-Type": "application/json"],
             body: ["phoneNumber": mobileNumber,
@@ -37,7 +37,7 @@ struct Authentication: Endpoint {
     
     static func verifyRefreshToken(token: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            baseUrl: URL(string: "https://gropper-api-production.up.railway.app/")!,
             path: "verify-refresh",
             method: .post,
             headers: ["Authorization": token]
@@ -46,7 +46,7 @@ struct Authentication: Endpoint {
     
     static func allowNotifications(phoneNumber: String, token: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            baseUrl: URL(string: "https://gropper-api-production.up.railway.app/")!,
             path: "allow-notifications",
             method: .post,
             headers: ["Content-Type": "application/json"],

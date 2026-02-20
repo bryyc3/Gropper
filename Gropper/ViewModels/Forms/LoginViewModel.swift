@@ -13,7 +13,10 @@ class LoginViewModel: ObservableObject{
     
     func requestOtp() async {
         do{
-            let request = Authentication.sendOtp(mobileNumber: user.phoneNumber)
+            guard let userPhoneNumber = try? NumberParse(number: user.phoneNumber) else {
+                throw NumberParseError.parseErr
+            }
+            let request = Authentication.sendOtp(mobileNumber: userPhoneNumber)
             user.otpGenerated = try await NetworkManager.shared.execute(endpoint: request, auth: false, type: Bool.self) ?? false
         } catch BuildRequestError.encodingError{
             print("encoding error")
@@ -31,6 +34,7 @@ class LoginViewModel: ObservableObject{
             guard let userPhoneNumber = try? NumberParse(number: user.phoneNumber) else {
                 throw NumberParseError.parseErr
             }
+            
             let request = Authentication.verifyOtp(mobileNumber: userPhoneNumber, otp: user.otpCode)
             let tokens = try await NetworkManager.shared.execute(endpoint: request, auth: false, type: WebTokens.self) ?? WebTokens()
             
@@ -58,6 +62,6 @@ class LoginViewModel: ObservableObject{
     func resetUser(){
         user.phoneNumber = ""
         user.otpCode = ""
-        user.otpGenerated = false
+        user.otpGenerated = true
     }
 }

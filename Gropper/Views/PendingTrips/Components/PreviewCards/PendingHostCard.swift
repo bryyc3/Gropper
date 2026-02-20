@@ -17,12 +17,14 @@ struct PendingHostCard: View {
     
     var body: some View {
         ScrollView(.horizontal) {
-            LazyHStack{
+            LazyHStack {
                 ForEach(Array(trips.enumerated()), id: \.offset) {index, trip in
                     HStack {
-                        if let contactPhoto = imageData(info: trip.host.contactPhoto){
+                        if let contactPhoto = imageData(info: trip.host.contactPhoto) {
                             Image(uiImage: contactPhoto)
                                 .resizable()
+                                .scaledToFill()
+                                .clipShape(Circle())
                                 .frame(width: 45, height: 45)
                                 .padding(.leading, 10)
                         } else {
@@ -40,6 +42,10 @@ struct PendingHostCard: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                             Text("Trip to: \n\(trip.location)")
                                 .font(.system(size: 18, weight: .bold))
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
+                            Text(trip.locationDescription)
+                                .font(.system(size: 10, weight: .bold))
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .foregroundColor(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                         }

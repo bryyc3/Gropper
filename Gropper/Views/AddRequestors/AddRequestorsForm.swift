@@ -53,6 +53,10 @@ struct AddRequestorsForm: View {
                     }
                 }
             }
+            Text("Cannot add requestors to a trip if the contact doesnt have a phone number")
+                .font(.system(size: 10, weight: .bold))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .foregroundColor(Color(#colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)))
         }
     }
     

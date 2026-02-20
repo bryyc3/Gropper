@@ -21,9 +21,11 @@ struct PendingRequestCard: View {
                 ForEach(Array(trips.enumerated()), id: \.offset) {index, trip in
                     ZStack {
                         VStack {
-                            if let contactPhoto = imageData(info: trip.host.contactPhoto){
+                            if let contactPhoto = imageData(info: trip.host.contactPhoto) {
                                 Image(uiImage: contactPhoto)
                                     .resizable()
+                                    .scaledToFill()
+                                    .clipShape(Circle())
                                     .frame(width: 45, height: 45)
                                     .padding(.top, 5)
                             } else {

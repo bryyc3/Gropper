@@ -19,6 +19,8 @@ struct RequestorTrips: View {
                         if let contactPhoto = imageData(info: tripInfo.host.contactPhoto){
                             Image(uiImage: contactPhoto)
                                 .resizable()
+                                .scaledToFill()
+                                .clipShape(Circle())
                                 .frame(width: 35, height: 35)
                         } else {
                             Image(systemName: "person.crop.circle.fill")

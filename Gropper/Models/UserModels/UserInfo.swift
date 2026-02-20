@@ -9,5 +9,5 @@
 struct UserInfo {
     var phoneNumber = ""
     var otpCode = ""
-    var otpGenerated = false
+    var otpGenerated = true
 }
