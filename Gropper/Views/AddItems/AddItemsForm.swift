@@ -16,45 +16,47 @@ struct AddItemsForm: View {
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
-        Section(header: Text("What Do You need?")){
-            if (viewModel.items.count > 0) {
-                ForEach($viewModel.items){$item in
-                    VStack{
-                        TextField("Item Name", text: $item.itemName)
-                        Divider()
-                        TextField("Item Description", text: $item.itemDescription)
+        Form {
+            Section(header: Text("What Do You need?")){
+                if (viewModel.items.count > 0) {
+                    ForEach($viewModel.items){$item in
+                        VStack{
+                            TextField("Item Name", text: $item.itemName)
+                            Divider()
+                            TextField("Item Description", text: $item.itemDescription)
+                        }
+                        .padding()
                     }
-                    .padding()
-                }
-                .onDelete{ indexSet in
-                    viewModel.items.remove(atOffsets: indexSet)
-                }
-                
-            } else{
-                Section{
-                    Text("No Items")
-                }
-            }
-            Button("Add Item"){
-                viewModel.items.append(ItemInfo())
-            }
-            .toolbar{
-                ToolbarItem(placement: .confirmationAction){
-                    Button("Submit"){
-                        Task{
-                            await viewModel.addItems(trip: tripId, tripHost: host)
+                    .onDelete{ indexSet in
+                        if viewModel.items.count > 1 {
+                            viewModel.items.remove(atOffsets: indexSet)
                         }
                     }
-                    .disabled(!canSubmit)
-                    .onChange(of: viewModel.successfullyAdded) {
-                        if viewModel.successfullyAdded{
-                            onFormSubmit()
-                            dismiss()
-                        }
+                    Button("Add Item"){
+                        viewModel.items.append(ItemInfo())
+                    }
+                } else {
+                    Section {
+                        Text("No items added")
                     }
                 }
             }
-            
+        }
+        .toolbar{
+            ToolbarItem(placement: .confirmationAction){
+                Button("Submit"){
+                    Task{
+                        await viewModel.addItems(trip: tripId, tripHost: host)
+                    }
+                }
+                .disabled(!canSubmit)
+                .onChange(of: viewModel.successfullyAdded) {
+                    if viewModel.successfullyAdded{
+                        onFormSubmit()
+                        dismiss()
+                    }
+                }
+            }
         }
     }
     var canSubmit: Bool {

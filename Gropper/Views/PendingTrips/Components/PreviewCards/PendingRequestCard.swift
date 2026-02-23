@@ -103,6 +103,7 @@ struct PendingRequestCard: View {
                             .shadow(radius: 7))
                         .frame(height: 350)
                     }
+                    .padding()
                 }
             }
             .scrollTargetLayout()

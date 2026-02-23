@@ -22,6 +22,10 @@ struct HostedTripView: View {
                         .font(.system(size: 40, weight: .bold))
                         .multilineTextAlignment(.center)
                         .foregroundColor(Color(#colorLiteral(red: 0.009296660312, green: 0.7246019244, blue: 0.3760085404, alpha: 1)))
+                    Text(trip.locationDescription)
+                        .font(.system(size: 20, weight: .semibold))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color(#colorLiteral(red: 0.3647058904, green: 0.06666667014, blue: 0.9686274529, alpha: 1)))
                     
                     Text("Host: You")
                         .font(.system(size: 20, weight: .semibold))

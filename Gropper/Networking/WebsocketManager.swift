@@ -31,7 +31,6 @@ class SocketManagerService {
         do {
             let jsonData = try JSONSerialization.data(withJSONObject: receivedData)
             let decoded = try JSONDecoder().decode(T.self, from: jsonData)
-            print(decoded)
             return decoded
         } catch {
            throw WebsocketError.decodingError

@@ -96,18 +96,18 @@ struct TripCreationView: View {
                             .padding()
                         }
                         .onDelete{ indexSet in
-                            viewModel.items.remove(atOffsets: indexSet)
+                            if viewModel.items.count > 1 {
+                                viewModel.items.remove(atOffsets: indexSet)
+                            }
                         }
-                        
-                    } else{
-                        Section{
-                            Text("No Items")
+                        Button("Add Item"){
+                            viewModel.items.append(ItemInfo())
+                        }
+                    } else {
+                        Section {
+                            Text("No items added")
                         }
                     }
-                    Button("Add Item"){
-                        viewModel.items.append(ItemInfo())
-                    }
-                    
                 }
             }
         }

@@ -22,8 +22,7 @@ class TripsViewModel: ObservableObject {
     var confirmedHostedTrips: [TripInfo]? {hostedTrips?.filter{$0.status == 1}}
     var confirmedRequestedTrips: [TripInfo]? {requestedTrips?.filter{$0.status == 1}}
     
-    func userLoggedIn() {
-        print("Running user logged in")
+    init() {
         guard let phoneNumber = getItem(forKey: "userPhoneNumber") else {
             Task {
                 try await AuthManager.shared.logout()
@@ -59,6 +58,7 @@ class TripsViewModel: ObservableObject {
                         for (requestorIndex, requestor) in tripsHosted[tripIndex].requestors.enumerated() {
                             tripsHosted[tripIndex].requestors[requestorIndex] = await retrieveContact(user: requestor)
                         }
+                        
                         SocketManagerService.shared.socket.emit("joinTrip", tripsHosted[tripIndex].tripId!)
                     }
                     self.hostedTrips = tripsHosted
@@ -217,27 +217,33 @@ class TripsViewModel: ObservableObject {
     }
     
     private func socketListener () {
-        SocketManagerService.shared.socket.on("newHostedTrip"){ [weak self] data, _ in
+        let socket = SocketManagerService.shared.socket
+        
+        socket.off("newHostedTrip")
+        socket.off("newRequest")
+        socket.off("newTrip")
+        socket.off("itemsAdded")
+        socket.off("itemDeleted")
+        socket.off("tripAccepted")
+        socket.off("tripDeleted")
+        
+        socket.on("newHostedTrip"){ [weak self] data, _ in
             guard let self else {return}
             guard let newTrip = data.first as? [String: Any] else {return}
             
             let tripId = newTrip["tripId"] as! String
-            SocketManagerService.shared.socket.emit("joinTrip", tripId)
+            socket.emit("joinTrip", tripId)
         }//when host creates new trip, host joins the room
         
-        SocketManagerService.shared.socket.on("newRequest"){ [weak self] data, _ in
+        socket.on("newRequest"){ [weak self] data, _ in
             guard let self else {return}
             guard let newRequestedTrip = data.first as? [String: Any] else {return}
-            print("running new req")
             do{
                 guard let newTrip = try SocketManagerService.shared.handleData(receivedData: newRequestedTrip, type: TripInfo.self) else {return}
                 
-                if self.hostedTrips == nil {
-                    let newTripArray: [TripInfo] = [newTrip]
-                    self.hostedTrips = newTripArray
-                } else {self.hostedTrips?.append(newTrip)}
+                self.hostedTrips?.append(newTrip)
                 
-                SocketManagerService.shared.socket.emit("joinTrip", newTrip.tripId!)
+                socket.emit("joinTrip", newTrip.tripId!)
             } catch WebsocketError.decodingError {
                 print("websocket new req decoding error")
             } catch {
@@ -245,7 +251,7 @@ class TripsViewModel: ObservableObject {
             }
         }//when requestor requests a trip, add trip to hosted trip and have host join room for requested trip
         
-        SocketManagerService.shared.socket.on("newTrip"){ [weak self] data, _ in
+        socket.on("newTrip"){ [weak self] data, _ in
             guard let self else {return}
             guard let newTripData = data.first as? [String: Any] else {return}
             print("adding trip")
@@ -258,7 +264,7 @@ class TripsViewModel: ObservableObject {
                         self.requestedTrips = [newTrip]
                     } else {self.requestedTrips?.append(newTrip)}
                     
-                    SocketManagerService.shared.socket.emit("joinTrip", newTrip.tripId!)
+                    socket.emit("joinTrip", newTrip.tripId!)
                 } catch WebsocketError.decodingError {
                     print("websocket new trip decoding error")
                 } catch {
@@ -268,13 +274,13 @@ class TripsViewModel: ObservableObject {
         }//when host creates a trip add it to requestors array and add requestor to trip room
         
         
-        SocketManagerService.shared.socket.on("itemsAdded"){ [weak self] data, _ in
+        socket.on("itemsAdded"){ [weak self] data, _ in
             guard let self else {return}
             guard let updatedTripData = data.first as? [String: Any] else {return}
             
             Task{
                 do{
-                    guard var updatedTrip = try SocketManagerService.shared.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
+                    guard var updatedTrip = try  SocketManagerService.shared.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
                     for (requestorIndex, requestor) in updatedTrip.requestors.enumerated() {
                         updatedTrip.requestors[requestorIndex] = await self.retrieveContact(user: requestor)
                     }
@@ -291,13 +297,13 @@ class TripsViewModel: ObservableObject {
             
         }//update hosts UI with items a user added to a request
         
-        SocketManagerService.shared.socket.on("itemDeleted"){ [weak self] data, _ in
+        socket.on("itemDeleted"){ [weak self] data, _ in
             guard let self else {return}
             guard let updatedTripData = data.first as? [String: Any] else {return}
             Task{
                 do{
                     print("deleting item")
-                    guard var updatedTrip = try SocketManagerService.shared.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
+                    guard var updatedTrip = try  SocketManagerService.shared.handleData(receivedData: updatedTripData, type: TripInfo.self) else {return}
                     for (requestorIndex, requestor) in updatedTrip.requestors.enumerated() {
                         updatedTrip.requestors[requestorIndex] = await self.retrieveContact(user: requestor)
                     }
@@ -317,13 +323,13 @@ class TripsViewModel: ObservableObject {
             
         }//update hosts UI with items a user added to a request
         
-        SocketManagerService.shared.socket.on("tripAccepted"){ [weak self] data, _ in
+        socket.on("tripAccepted"){ [weak self] data, _ in
             guard let self else {return}
             guard let newTripData = data.first as? [String: Any] else {return}
             print("running accepted trip")
             Task{
                 do{
-                    guard var newTrip = try SocketManagerService.shared.handleData(receivedData: newTripData, type: TripInfo.self) else {return}
+                    guard var newTrip = try  SocketManagerService.shared.handleData(receivedData: newTripData, type: TripInfo.self) else {return}
                     
                     if newTrip.host.phoneNumber == self.userNumber {
                         for (requestorIndex, requestor) in newTrip.requestors.enumerated() {
@@ -347,7 +353,7 @@ class TripsViewModel: ObservableObject {
             }
         }
         
-        SocketManagerService.shared.socket.on("tripDeleted") { [weak self] data, _ in
+        socket.on("tripDeleted") { [weak self] data, _ in
             guard let self else {print("self err"); return}
             guard let tripData = data.first as? [String: Any] else {print("data err"); return}
             let tripId = tripData["tripId"] as! String

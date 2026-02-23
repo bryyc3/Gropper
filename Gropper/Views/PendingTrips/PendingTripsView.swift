@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PendingTripsView: View {
-    @ObservedObject var model: TripsViewModel
+    @StateObject var model: TripsViewModel
     
     var body: some View {
         ScrollView(.vertical){

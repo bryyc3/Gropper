@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @ObservedObject var model: TripsViewModel
+    @StateObject var model: TripsViewModel
     @State private var logout = false
     @State private var logoutSuccess = true
     
@@ -50,6 +50,5 @@ struct DashboardView: View {
             }
             .padding(7)
         }
-        .onAppear{model.userLoggedIn()}
     }
 }
