@@ -29,34 +29,42 @@ class LoginViewModel: ObservableObject{
         }
     }
     
-    func checkOtp() async {
+    func checkOtp() async throws -> Bool {
         do{
             guard let userPhoneNumber = try? NumberParse(number: user.phoneNumber) else {
                 throw NumberParseError.parseErr
             }
             
             let request = Authentication.verifyOtp(mobileNumber: userPhoneNumber, otp: user.otpCode)
-            let tokens = try await NetworkManager.shared.execute(endpoint: request, auth: false, type: WebTokens.self) ?? WebTokens()
-            
+            guard let tokens = try await NetworkManager.shared.execute(endpoint: request, auth: false, type: WebTokens.self) else {
+                return false
+            }
             guard let accessToken = tokens.accessToken, let refreshToken = tokens.refreshToken else {
-                throw NetworkError.decodingError
+                return false
             }
             AuthManager.shared.login(accessToken: accessToken, refreshToken: refreshToken, phoneNumber: userPhoneNumber)
+            
+            if let notificationToken = getItem(forKey: "notificationToken") {
+                print(notificationToken)
+                let request = Authentication.allowNotifications(phoneNumber: userPhoneNumber, token: notificationToken)
+                try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self)
+            }
             resetUser()
         } catch NumberParseError.parseErr {
             print("Number Parse Error")
         }
         catch BuildRequestError.encodingError {
-            print("Auth encoding error")
+            print("Login encoding error")
         } catch NetworkError.invalidURL {
-            print ("Auth invalid URL")
+            print ("Login invalid URL")
         } catch NetworkError.invalidResponse {
-            print ("Auth invalid response")
+            print ("Login invalid response")
         } catch NetworkError.decodingError {
-            print ("Auth decoding error")
+            print ("Login decoding error")
         } catch {
-            print ("Auth unexpected error")
+            print ("Login unexpected error")
         }
+        return true
     }
     
     func resetUser(){

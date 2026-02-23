@@ -10,6 +10,7 @@ import SwiftUI
 struct DashboardView: View {
     @ObservedObject var model: TripsViewModel
     @State private var logout = false
+    @State private var logoutSuccess = true
     
     var body: some View {
         NavigationStack{
@@ -25,12 +26,18 @@ struct DashboardView: View {
                         }
                         .confirmationDialog("Are you sure you want to cancel this request?", isPresented: $logout) {
                             Button(role: .destructive) {
-                                AuthManager.shared.logout()
+                                Task {
+                                    logoutSuccess = try await AuthManager.shared.logout()
+                                }
                             } label: {
                                 Text("Logout")
                             }
                         } message: {
                             Text("Are you sure you want to logout?")
+                        }
+                        if(!logoutSuccess){
+                            Text("There was an error logging you out")
+                                .foregroundColor(.red)
                         }
                     }
                 }

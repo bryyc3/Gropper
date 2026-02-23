@@ -20,7 +20,9 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
      
     override init(){
         guard let phoneNumber = getItem(forKey: "userPhoneNumber") else {
-            AuthManager.shared.logout()
+            Task {
+                try await AuthManager.shared.logout()
+            }
             userNumber = ""
             return
         }
@@ -81,7 +83,9 @@ class TripCreationViewModel: NSObject, ObservableObject, CNContactPickerDelegate
             } catch NetworkError.invalidResponse {
                 print ("create trip invalid response")
             } catch NetworkError.unauthorized{
-                AuthManager.shared.logout()
+                do {
+                    try await AuthManager.shared.logout()
+                } catch {print("logout err")}
             } catch {
                 print ("create trip unexpected error")
             }

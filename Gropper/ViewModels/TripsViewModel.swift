@@ -25,12 +25,13 @@ class TripsViewModel: ObservableObject {
     func userLoggedIn() {
         print("Running user logged in")
         guard let phoneNumber = getItem(forKey: "userPhoneNumber") else {
-            AuthManager.shared.logout()
-            userNumber = ""
+            Task {
+                try await AuthManager.shared.logout()
+                userNumber = ""
+            }
             return
         }
         self.userNumber = phoneNumber
-        print(userNumber)
         socketListener()
         Task{
             do {
@@ -49,7 +50,6 @@ class TripsViewModel: ObservableObject {
     
     func retrieveTrips() async {
         do{
-            print(userNumber)
             let request = TripData.getTrips(user: userNumber)
             let tripsResponse = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: AllTrips.self)
             
@@ -84,7 +84,9 @@ class TripsViewModel: ObservableObject {
         } catch NetworkError.decodingError {
             print ("Dashboard decoding error")
         } catch NetworkError.unauthorized {
-            AuthManager.shared.logout()
+            do {
+                try await AuthManager.shared.logout()
+            } catch {print("logout err")}
         } catch {
             print ("Dash unexpected error")
         }
@@ -131,7 +133,9 @@ class TripsViewModel: ObservableObject {
         } catch NetworkError.invalidResponse {
             print ("Dash invalid response")
         } catch NetworkError.unauthorized {
-            AuthManager.shared.logout()
+            do {
+                try await AuthManager.shared.logout()
+            } catch {print("logout err")}
         } catch {
             print ("Dash unexpected error")
         }
@@ -155,7 +159,9 @@ class TripsViewModel: ObservableObject {
             print ("Dash invalid response")
             return false
         } catch NetworkError.unauthorized {
-            AuthManager.shared.logout()
+            do {
+                try await AuthManager.shared.logout()
+            } catch {print("logout err")}
             return false
         } catch {
             print ("Dash unexpected error")
@@ -179,7 +185,9 @@ class TripsViewModel: ObservableObject {
         } catch NetworkError.invalidResponse {
             print ("Dash invalid response")
         } catch NetworkError.unauthorized {
-            AuthManager.shared.logout()
+            do {
+                try await AuthManager.shared.logout()
+            } catch {print("logout err")}
         } catch {
             print ("Dash unexpected error")
         }
@@ -200,7 +208,9 @@ class TripsViewModel: ObservableObject {
         } catch NetworkError.invalidResponse {
             print ("Dash invalid response")
         } catch NetworkError.unauthorized {
-            AuthManager.shared.logout()
+            do {
+                try await AuthManager.shared.logout()
+            } catch {print("logout err")}
         } catch {
             print ("Dash unexpected error")
         }

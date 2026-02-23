@@ -16,7 +16,9 @@ class AddRequestorsViewModel: NSObject, ObservableObject {
     
     override init(){
         guard let phoneNumber = getItem(forKey: "userPhoneNumber") else {
-            AuthManager.shared.logout()
+            Task {
+                try await AuthManager.shared.logout()
+            }
             userNumber = ""
             return
         }
@@ -49,7 +51,9 @@ class AddRequestorsViewModel: NSObject, ObservableObject {
         } catch NetworkError.invalidResponse {
             print ("add req invalid response")
         } catch NetworkError.unauthorized{
-            AuthManager.shared.logout()
+            do {
+               try await AuthManager.shared.logout()
+            } catch {print("logout err")}
         } catch {
             print ("add req unexpected error")
         }

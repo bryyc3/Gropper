@@ -14,6 +14,7 @@ class AuthManager {
     private let accessTokenKey = "accessToken"
     private let refreshTokenKey = "refreshToken"
     private let userPhone = "userPhoneNumber"
+    private let notiToken = "notificationToken"
     
     
     func authStatus() -> Bool{
@@ -36,18 +37,33 @@ class AuthManager {
         }
     }
     
-    func logout() {
-        Task{
-            do{
-                SocketManagerService.shared.disconnectSocket()
+    func logout() async throws -> Bool{
+        do{
+            guard let userNumber = try getItem(forKey: userPhone), let notificationToken = try getItem (forKey: notiToken) else {
                 try deleteToken(forKey: accessTokenKey)
                 try deleteToken(forKey: refreshTokenKey)
                 try deleteToken(forKey: userPhone)
-            } catch KeychainError.unknown{
-                print("Keychain error")
+                NotificationCenter.default.post(name: .logout, object: nil)
+                return true
             }
-            NotificationCenter.default.post(name: .logout, object: nil)
+            
+            let request = Authentication.logout(phoneNumber: userNumber, deviceToken: notificationToken)
+            let logoutResponse = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self)
+            
+            if(logoutResponse == true) {
+                try deleteToken(forKey: accessTokenKey)
+                try deleteToken(forKey: refreshTokenKey)
+                try deleteToken(forKey: userPhone)
+            } else {
+                return false
+            }
+        } catch KeychainError.unknown{
+            print("Keychain error")
+        } catch {
+            print("Logout Error")
         }
+        NotificationCenter.default.post(name: .logout, object: nil)
+        return true
     }
 }
 

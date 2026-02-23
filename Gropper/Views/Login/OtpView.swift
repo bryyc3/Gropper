@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OtpView: View {
     @StateObject var otpViewModel: LoginViewModel
+    @State private var loginSuccess = true
     @State private var backButtonDisabled = true
     @State private var timeRemaining = 10
     @State private var attemptsRemaining = 5
@@ -29,7 +30,7 @@ struct OtpView: View {
                 Button {
                     Task{
                         if(attemptsRemaining > 0) {
-                            await otpViewModel.checkOtp()
+                            loginSuccess = try await otpViewModel.checkOtp()
                             attemptsRemaining -= 1
                         }
                     }
@@ -44,6 +45,13 @@ struct OtpView: View {
                 .background(Color(#colorLiteral(red: 0.08564137667, green: 0.3184491694, blue: 0.6205952168, alpha: 1)))
                 .cornerRadius(50)
                 .disabled(attemptsRemaining == 0)
+                
+                if(loginSuccess == false) {
+                    Text("Incorrect password")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundColor(.red)
+                        .padding()
+                }
                 
                 if(attemptsRemaining == 0) {
                     Text("Too many attempts please wait to try again")

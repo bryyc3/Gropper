@@ -16,13 +16,16 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
         let userToken = deviceToken.map { String(format: "%02x", $0) }.joined()
-        print("Device Token:", userToken)
         guard let userPhone = getItem(forKey: "userPhoneNumber") else {
             print("no phone number")
             return
         }
         Task {
             do {
+                if getItem(forKey: "notificationToken") != nil {
+                    try deleteToken(forKey: "notificationToken")
+                    try storeItem(item: userToken, forKey: "notificationToken")
+                }
                 let request = Authentication.allowNotifications(phoneNumber: userPhone, token: userToken)
                 try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self)
                 

@@ -23,3 +23,5 @@ enum NetworkError: Error{
 enum WebsocketError: Error {
     case decodingError
 }
+
+
