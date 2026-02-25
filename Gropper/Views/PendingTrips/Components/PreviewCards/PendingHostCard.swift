@@ -20,7 +20,7 @@ struct PendingHostCard: View {
             LazyHStack {
                 ForEach(Array(trips.enumerated()), id: \.offset) {index, trip in
                     HStack {
-                        if let contactPhoto = imageData(info: trip.host.contactPhoto) {
+                        if let contactPhoto = imageData(info: trip.requestors[0].contactPhoto) {
                             Image(uiImage: contactPhoto)
                                 .resizable()
                                 .scaledToFill()
@@ -36,7 +36,7 @@ struct PendingHostCard: View {
                                 .padding(.leading, 10)
                         }
                         VStack {
-                            Text("Requestor:\n \(trip.host.contactName ?? trip.host.phoneNumber)")
+                            Text("Requestor:\n \(trip.requestors[0].contactName ?? trip.requestors[0].phoneNumber)")
                                 .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
                                 .font(.system(size: 15, weight: .bold))
                                 .frame(maxWidth: .infinity, alignment: .leading)
