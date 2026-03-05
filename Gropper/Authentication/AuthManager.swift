@@ -39,7 +39,7 @@ class AuthManager {
     
     func logout() async throws -> Bool{
         do{
-            guard let userNumber = try getItem(forKey: userPhone), let notificationToken = try getItem (forKey: notiToken) else {
+            guard let userNumber = try getItem(forKey: userPhone), let notificationToken = try getItem(forKey: notiToken) else {
                 try deleteToken(forKey: accessTokenKey)
                 try deleteToken(forKey: refreshTokenKey)
                 try deleteToken(forKey: userPhone)

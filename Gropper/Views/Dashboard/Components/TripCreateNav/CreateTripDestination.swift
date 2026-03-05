@@ -32,7 +32,7 @@ struct CreateTripDestination: View {
                     .frame(width: 80, height: 80)
                     
             }
-            NavigationLink(destination: TripCreationView(formType: destination, onFormSubmit: {Task{ await model.retrieveTrips()}})){
+            NavigationLink(destination: TripCreationView(formType: destination, onFormSubmit: {Task{ try await model.retrieveTrips()}})){
                 Text(destination.createTripButtonTitle)
                     .font(.system(size: 15, weight: .semibold))
                     .padding(.horizontal, 65)

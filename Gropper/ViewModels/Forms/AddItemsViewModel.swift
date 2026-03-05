@@ -26,7 +26,7 @@ class AddItemsViewModel: NSObject, ObservableObject {
         userNumber = phoneNumber
     }
     
-    func addItems(trip: String, tripHost: String) async {
+    func addItems(trip: String, tripHost: String) async throws -> ApiResponse {
         do{
             
             let request = TripData.updateItems(tripId: trip, host: tripHost, userPhone: userNumber, itemsRequested: items)
@@ -37,19 +37,20 @@ class AddItemsViewModel: NSObject, ObservableObject {
             if(itemsAdded) {
                 successfullyAdded = itemsAdded
             } else {
-                print ("couldnt add items")
+                return ApiResponse(status200: false, message: "Add Items Error - Couldn't Add Items")
             }
         } catch NetworkError.invalidURL {
-            print ("add items invalid URL")
+            return ApiResponse(status200: false, message: "Add Items Error - Network Endpoint Error")
         } catch NetworkError.invalidResponse {
-            print ("add items invalid response")
+            return ApiResponse(status200: false, message: "Add Items Error - Invalid Response")
         } catch NetworkError.unauthorized{
             do {
                try await AuthManager.shared.logout()
-            } catch {print("logout err")}
+            } catch {return ApiResponse(status200: false, message: "Add Items Error - Unauthorized, Login Again")}
         } catch {
-            print ("add items unexpected error")
+            return ApiResponse(status200: false, message: "Add Items Error - Unexpected Error")
         }
+        return ApiResponse(status200: true, message: nil)
     }
 }
 

@@ -10,6 +10,7 @@ import SwiftUI
 struct TripCreationView: View {
     let formType: TripType
     @StateObject var viewModel = TripCreationViewModel()
+    @State private var createTrip: ApiResponse = ApiResponse(status200: true, message: nil)
     @State private var displayContactPicker = false
     @Environment(\.dismiss) var dismiss
     
@@ -83,6 +84,12 @@ struct TripCreationView: View {
                 .font(.system(size: 10, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundColor(Color(#colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)))
+            if (createTrip.status200 == false) {
+                Text(createTrip.message ?? "Error Creating Trip")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundColor(.red)
+                    .padding()
+            }
             
             if (formType == .request) {
                 Section(header: Text("What Do You need?")){
@@ -131,8 +138,8 @@ struct TripCreationView: View {
             ToolbarItem(placement: .confirmationAction){
                 Button("Create Trip"){
                     Task{
-                        if(formType == .host){viewModel.createHostedTrip()}
-                        if(formType == .request){viewModel.requestTrip()}
+                        if(formType == .host){createTrip = try await viewModel.createHostedTrip()}
+                        if(formType == .request){createTrip = try await viewModel.requestTrip()}
                     }
                 }
                 .disabled(!canSubmit)

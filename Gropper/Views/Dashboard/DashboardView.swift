@@ -11,6 +11,7 @@ struct DashboardView: View {
     @StateObject var model: TripsViewModel
     @State private var logout = false
     @State private var logoutSuccess = true
+    @State private var getTrips: ApiResponse = ApiResponse(status200: true, message: nil)
     
     var body: some View {
         NavigationStack{
@@ -24,7 +25,7 @@ struct DashboardView: View {
                         Button("Logout") {
                             logout.toggle()
                         }
-                        .confirmationDialog("Are you sure you want to cancel this request?", isPresented: $logout) {
+                        .confirmationDialog("Are you sure you want to logout?", isPresented: $logout) {
                             Button(role: .destructive) {
                                 Task {
                                     logoutSuccess = try await AuthManager.shared.logout()
@@ -39,12 +40,18 @@ struct DashboardView: View {
                             Text("There was an error logging you out")
                                 .foregroundColor(.red)
                         }
+                        if (getTrips.status200 == false) {
+                            Text(getTrips.message ?? "Error Getting Trips Youre Apart Of")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundColor(.red)
+                                .padding()
+                        }
                     }
                 }
                 .scrollIndicators(ScrollIndicatorVisibility.never)
                 .refreshable {
                     Task{
-                        await model.retrieveTrips()
+                        getTrips = try await model.retrieveTrips()
                     }
                 }
             }

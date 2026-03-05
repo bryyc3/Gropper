@@ -24,4 +24,9 @@ enum WebsocketError: Error {
     case decodingError
 }
 
+struct ApiResponse {
+    let status200: Bool
+    let message: String?
+}
+
 

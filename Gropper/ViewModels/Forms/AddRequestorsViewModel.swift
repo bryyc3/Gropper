@@ -25,7 +25,7 @@ class AddRequestorsViewModel: NSObject, ObservableObject {
         userNumber = phoneNumber
     }
     
-    func addRequestors(trip: String) async {
+    func addRequestors(trip: String) async throws -> ApiResponse {
         do{
             for (index, requestor) in selectedContacts.enumerated() {
                 guard let requestorNumber = try? NumberParse(number: requestor.phoneNumber) else {
@@ -42,20 +42,21 @@ class AddRequestorsViewModel: NSObject, ObservableObject {
             if(requestorsAdded) {
                 successfullyAdded = requestorsAdded
             } else {
-                print ("couldnt add items")
+                return ApiResponse(status200: false, message: "Add Requestors Error - Failed to Add Requestors")
             }
         } catch NumberParseError.parseErr{
-            print("Number Parse Error")
+            return ApiResponse(status200: false, message: "Add Requestors Error - Unable to Parse Phone Number, Try Again")
         } catch NetworkError.invalidURL {
-            print ("add req invalid URL")
+            return ApiResponse(status200: false, message: "Add Requestors Error - Network Endpoint Error")
         } catch NetworkError.invalidResponse {
-            print ("add req invalid response")
+            return ApiResponse(status200: false, message: "Add Requestors Error - Invalid Response")
         } catch NetworkError.unauthorized{
             do {
                try await AuthManager.shared.logout()
-            } catch {print("logout err")}
+            } catch {return ApiResponse(status200: false, message: "Add Requestors Error - Unauthorized, please log back in")}
         } catch {
-            print ("add req unexpected error")
+            return ApiResponse(status200: false, message: "Add Requestors Error - Unexpected Error")
         }
+        return ApiResponse(status200: true, message: nil)
     }
 }

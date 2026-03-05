@@ -12,6 +12,8 @@ struct HostedTripView: View {
     @State private var selectedRequestor: ContactInfo?
     @State private var removeRequestorConfirmation: Bool = false
     @State private var deleteTripConfirmation: Bool = false
+    @State private var tripDeleted: ApiResponse = ApiResponse(status200: true, message: nil)
+    @State private var requestorRemoved: ApiResponse = ApiResponse(status200: true, message: nil)
     @Environment(\.dismiss) var dismiss
     let tripViewInfo: TripInfo?
     
@@ -32,7 +34,7 @@ struct HostedTripView: View {
                         .foregroundColor(Color(#colorLiteral(red: 0.3717266917, green: 0.3688513637, blue: 0.3725958467, alpha: 1)))
                         .padding(.bottom, 7)
                     
-                    NavigationLink(destination: AddRequestorsForm(tripId: trip.tripId!, onFormSubmit: {Task{ await model.retrieveTrips()}})){
+                    NavigationLink(destination: AddRequestorsForm(tripId: trip.tripId!, onFormSubmit: {Task{ try await model.retrieveTrips()}})){
                         Text("Add Requestors")
                             .font(.system(size: 15, weight: .semibold))
                             .padding(.horizontal, 65)
@@ -62,7 +64,7 @@ struct HostedTripView: View {
                                 )) {
                                     Button("Remove Requestor", role: .destructive) {
                                         if (trip.requestors.count > 1){
-                                            Task{await model.removeRequestor(requestorInfo: requestor.phoneNumber, trip: trip.tripId!)}
+                                            Task{requestorRemoved = try await model.removeRequestor(requestorInfo: requestor.phoneNumber, trip: trip.tripId!)}
                                             selectedRequestor = nil
                                             removeRequestorConfirmation.toggle()
                                         }
@@ -70,6 +72,12 @@ struct HostedTripView: View {
                                     .padding()
                                     .presentationCompactAdaptation(.popover)
                                 }
+                            if (requestorRemoved.status200 == false) {
+                                Text(requestorRemoved.message ?? "Error Removing Requestor")
+                                    .font(.system(size: 10, weight: .semibold))
+                                    .foregroundColor(.red)
+                                    .padding()
+                            }
                             Button{
                                 selectedRequestor = requestor
                                 removeRequestorConfirmation.toggle()
@@ -93,14 +101,20 @@ struct HostedTripView: View {
                     )) {
                         Button("Delete Trip", role: .destructive) {
                             Task{
-                                let tripDeleted = await model.deleteTrip(trip: trip.tripId!)
-                                if tripDeleted {
+                                let tripDeleted = try await model.deleteTrip(trip: trip.tripId!)
+                                if tripDeleted.status200 {
                                     dismiss()
                                 }
                             }
                         }
                         .padding()
                         .presentationCompactAdaptation(.popover)
+                    }
+                    if (tripDeleted.status200 == false) {
+                        Text(tripDeleted.message ?? "Error Finishing Trip")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundColor(.red)
+                            .padding()
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -12,6 +12,7 @@ struct AddRequestorsForm: View {
     var onFormSubmit: () -> Void
     
     @State private var displayContactPicker = false
+    @State private var addRequestors: ApiResponse = ApiResponse(status200: true, message: nil)
     @StateObject var viewModel = AddRequestorsViewModel()
     @Environment(\.dismiss) var dismiss
     
@@ -40,7 +41,7 @@ struct AddRequestorsForm: View {
                     ToolbarItem(placement: .confirmationAction){
                         Button("Submit"){
                             Task{
-                                await viewModel.addRequestors(trip: tripId)
+                                addRequestors = try await viewModel.addRequestors(trip: tripId)
                             }
                         }
                         .disabled(!canSubmit)
@@ -57,6 +58,12 @@ struct AddRequestorsForm: View {
                 .font(.system(size: 10, weight: .bold))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .foregroundColor(Color(#colorLiteral(red: 0.501960814, green: 0.501960814, blue: 0.501960814, alpha: 1)))
+            if (addRequestors.status200 == false) {
+                Text(addRequestors.message ?? "Error Adding Requestors")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundColor(.red)
+                    .padding()
+            }
         }
     }
     

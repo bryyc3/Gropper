@@ -11,6 +11,8 @@ struct PendingHostCard: View {
     @EnvironmentObject var model: TripsViewModel
     @State private var selectedTrip: String?
     @State private var showingDeclineConfirmation: Bool = false
+    @State private var acceptTrip: ApiResponse = ApiResponse(status200: true, message: nil)
+    @State private var deleteTrip: ApiResponse = ApiResponse(status200: true, message: nil)
     
     let trips: [TripInfo]
     let colorScheme: [Color]
@@ -53,7 +55,7 @@ struct PendingHostCard: View {
                         
                         HStack{
                             Button {
-                                Task{await model.acceptTrip(trip: trip.tripId!)}
+                                Task{acceptTrip = try await model.acceptTrip(trip: trip.tripId!)}
                             } label: {
                                 Image(systemName: "checkmark.circle.fill")
                                     .resizable()
@@ -81,6 +83,18 @@ struct PendingHostCard: View {
                         .fill(Gradient(colors: colorScheme))
                         .shadow(radius: 7))
                     .padding(10)
+                    if (acceptTrip.status200 == false) {
+                        Text(acceptTrip.message ?? "Error Accepting Trip")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundColor(.red)
+                            .padding()
+                    }
+                    if (deleteTrip.status200 == false) {
+                        Text(deleteTrip.message ?? "Error Deleting Trip")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundColor(.red)
+                            .padding()
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -88,7 +102,7 @@ struct PendingHostCard: View {
         }
         .confirmationDialog("Are you sure you want to decline this request?", isPresented: $showingDeclineConfirmation) {
             Button("Decline", role: .destructive){
-                Task{await model.deleteTrip(trip: selectedTrip!)}
+                Task{deleteTrip = try await model.deleteTrip(trip: selectedTrip!)}
             }
         } message: {
             Text("Are you sure you want to decline this request?")

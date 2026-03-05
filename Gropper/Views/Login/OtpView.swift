@@ -9,7 +9,8 @@ import SwiftUI
 
 struct OtpView: View {
     @StateObject var otpViewModel: LoginViewModel
-    @State private var loginSuccess = true
+    @State private var loginSuccess: ApiResponse = ApiResponse(status200: true, message: nil)
+    @State private var otpRequested: ApiResponse = ApiResponse(status200: true, message: nil)
     @State private var backButtonDisabled = true
     @State private var timeRemaining = 10
     @State private var attemptsRemaining = 5
@@ -46,8 +47,8 @@ struct OtpView: View {
                 .cornerRadius(50)
                 .disabled(attemptsRemaining == 0)
                 
-                if(loginSuccess == false) {
-                    Text("Incorrect password")
+                if(loginSuccess.status200 == false) {
+                    Text(loginSuccess.message ?? "Error - try again")
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundColor(.red)
                         .padding()
@@ -65,8 +66,8 @@ struct OtpView: View {
                             }
                         }
                 }
-                if otpViewModel.user.otpGenerated == false {
-                    Text("There was an error trying to generate your OTP, please go back and try again")
+                if (otpRequested.status200 == false) {
+                    Text(otpRequested.message ?? "Error generating OTP")
                         .font(.system(size: 10, weight: .semibold))
                         .foregroundColor(.red)
                         .padding()
@@ -87,7 +88,7 @@ struct OtpView: View {
         }
         .onAppear{
             Task{
-                await otpViewModel.requestOtp()
+                otpRequested = try await otpViewModel.requestOtp()
                 
                 while timeRemaining > 0 {
                     try await Task.sleep(for: .seconds(1))

@@ -13,6 +13,7 @@ struct AddItemsForm: View {
     var onFormSubmit: () -> Void
     
     @StateObject var viewModel = AddItemsViewModel()
+    @State private var addItems: ApiResponse = ApiResponse(status200: true, message: nil)
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -40,13 +41,19 @@ struct AddItemsForm: View {
                         Text("No items added")
                     }
                 }
+                if (addItems.status200 == false) {
+                    Text(addItems.message ?? "Error Adding Items")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundColor(.red)
+                        .padding()
+                }
             }
         }
         .toolbar{
             ToolbarItem(placement: .confirmationAction){
                 Button("Submit"){
                     Task{
-                        await viewModel.addItems(trip: tripId, tripHost: host)
+                       addItems = try await viewModel.addItems(trip: tripId, tripHost: host)
                     }
                 }
                 .disabled(!canSubmit)

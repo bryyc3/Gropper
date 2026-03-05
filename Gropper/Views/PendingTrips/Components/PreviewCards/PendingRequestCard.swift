@@ -11,6 +11,7 @@ struct PendingRequestCard: View {
     @EnvironmentObject var model: TripsViewModel
     @State private var selectedTrip: String?
     @State private var showingCancelConfirmation: Bool = false
+    @State private var deleteTrip: ApiResponse = ApiResponse(status200: true, message: nil)
     
     let trips: [TripInfo]
     let colorScheme: [Color]
@@ -93,7 +94,7 @@ struct PendingRequestCard: View {
                         }
                         .confirmationDialog("Are you sure you want to cancel this request?", isPresented: $showingCancelConfirmation) {
                             Button("Delete request", role: .destructive) {
-                                Task{await model.deleteTrip(trip: selectedTrip!)}
+                                Task{deleteTrip = try await model.deleteTrip(trip: selectedTrip!)}
                             }
                         } message: {
                             Text("Are you sure you want to cancel this request?")
@@ -102,6 +103,12 @@ struct PendingRequestCard: View {
                             .fill(Gradient(colors: colorScheme))
                             .shadow(radius: 7))
                         .frame(height: 350)
+                        if (deleteTrip.status200 == false) {
+                            Text(deleteTrip.message ?? "Error Deleting Trip")
+                                .font(.system(size: 10, weight: .semibold))
+                                .foregroundColor(.red)
+                                .padding()
+                        }
                     }
                     .padding()
                 }

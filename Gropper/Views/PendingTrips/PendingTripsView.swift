@@ -9,6 +9,7 @@ import SwiftUI
 
 struct PendingTripsView: View {
     @StateObject var model: TripsViewModel
+    @State private var getTrips: ApiResponse = ApiResponse(status200: true, message: nil)
     
     var body: some View {
         ScrollView(.vertical){
@@ -17,6 +18,12 @@ struct PendingTripsView: View {
                     .padding(7)
                 PendingPreview(previewType: .request, tripData: model.pendingRequestedTrips)
                     .padding(7)
+                if (getTrips.status200 == false) {
+                    Text(getTrips.message ?? "Error Getting Trips Youre Apart Of")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundColor(.red)
+                        .padding()
+                }
             }
         }
         .padding(.top, 50)
@@ -24,7 +31,7 @@ struct PendingTripsView: View {
         .defaultScrollAnchor(.center, for: .alignment)
         .refreshable {
             Task{
-                await model.retrieveTrips()
+                getTrips = try await model.retrieveTrips()
             }
         }
     }

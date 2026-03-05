@@ -40,14 +40,14 @@ class TripsViewModel: ObservableObject {
                         UIApplication.shared.registerForRemoteNotifications()
                     }
                 }
-                await retrieveTrips()
+                try await retrieveTrips()
             } catch {
                 print("notification access request err")
             }
         }
     }
     
-    func retrieveTrips() async {
+    func retrieveTrips() async throws -> ApiResponse {
         do{
             let request = TripData.getTrips(user: userNumber)
             let tripsResponse = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: AllTrips.self)
@@ -78,18 +78,19 @@ class TripsViewModel: ObservableObject {
             }// iterate through each type of trip and store contact info hosts and requestors
             
         } catch NetworkError.invalidURL {
-            print ("Dash invalid URL")
+            return ApiResponse(status200: false, message: "Retrieve Trips Error - Unable to Reach Endpoint")
         } catch NetworkError.invalidResponse {
-            print ("Dash invalid response")
+            return ApiResponse(status200: false, message: "Retrieve Trips Error - Invalid Response")
         } catch NetworkError.decodingError {
-            print ("Dashboard decoding error")
+            return ApiResponse(status200: false, message: "Retrieve Trips Error - Unable to Decode Response")
         } catch NetworkError.unauthorized {
             do {
                 try await AuthManager.shared.logout()
-            } catch {print("logout err")}
+            } catch {return ApiResponse(status200: false, message: "Retrieve Trips Error - Unauthorized, login again")}
         } catch {
-            print ("Dash unexpected error")
+            return ApiResponse(status200: false, message: "Retrieve Trips Error - Unexpected Error")
         }
+        return ApiResponse(status200: true, message: nil)
     }
     
     func retrieveContact(user: ContactInfo) async -> ContactInfo{
@@ -119,30 +120,27 @@ class TripsViewModel: ObservableObject {
         }
     }//request for access to contacts
     
-    func acceptTrip(trip: String) async {
+    func acceptTrip(trip: String) async throws -> ApiResponse {
         do{
             let request = TripData.acceptTrip(tripId: trip)
             guard let tripAccepted = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else {
                 throw NetworkError.invalidResponse
             }
-            if tripAccepted{
-                print("Trip accepted")
-            }
         } catch NetworkError.invalidURL {
-            print ("Dash invalid URL")
+            return ApiResponse(status200: false, message: "Accept Trip Error - Network Endpoint Error")
         } catch NetworkError.invalidResponse {
-            print ("Dash invalid response")
+            return ApiResponse(status200: false, message: "Accept Trip Error - Invalid Response")
         } catch NetworkError.unauthorized {
             do {
                 try await AuthManager.shared.logout()
-            } catch {print("logout err")}
+            } catch {return ApiResponse(status200: false, message: "Accept Trip Error - Unauthorized, login again")}
         } catch {
-            print ("Dash unexpected error")
+            return ApiResponse(status200: false, message: "Accept Trip Error - Unexpected Error")
         }
-        
+        return ApiResponse(status200: true, message: nil)
     }
     
-    func deleteTrip(trip: String) async -> Bool{
+    func deleteTrip(trip: String) async throws -> ApiResponse {
         do{
             let request = TripData.deleteTrip(tripId: trip)
             guard let tripDeleted = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else { throw NetworkError.invalidResponse
@@ -150,26 +148,24 @@ class TripsViewModel: ObservableObject {
             
             if tripDeleted {
                 self.hostedTrips?.removeAll(where: { $0.tripId == trip })
+            } else {
+                return ApiResponse(status200: false, message: "Delete Trip Error - Couldnt Delete Trip")
             }
-            return tripDeleted
         } catch NetworkError.invalidURL {
-            print ("Dash invalid URL")
-            return false
+            return ApiResponse(status200: false, message: "Delete Trip Error - Network Endpoint Error")
         } catch NetworkError.invalidResponse {
-            print ("Dash invalid response")
-            return false
+            return ApiResponse(status200: false, message: "Delete Trip Error - Invalid Response")
         } catch NetworkError.unauthorized {
             do {
                 try await AuthManager.shared.logout()
-            } catch {print("logout err")}
-            return false
+            } catch {return ApiResponse(status200: false, message: "Delete Trip Error - Unauthorized, login again")}
         } catch {
-            print ("Dash unexpected error")
-            return false
+            return ApiResponse(status200: false, message: "Delete Trip Error - Unexpected Error")
         }
+        return ApiResponse(status200: true, message: nil)
     }
     
-    func removeRequestor(requestorInfo: String, trip: String) async {
+    func removeRequestor(requestorInfo: String, trip: String) async throws -> ApiResponse {
         do{
             let request = TripData.removeRequestor(requestor: requestorInfo, tripId: trip)
             guard let requestorRemoved = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: Bool.self) else {
@@ -181,19 +177,20 @@ class TripsViewModel: ObservableObject {
                 }
             }
         } catch NetworkError.invalidURL {
-            print ("Dash invalid URL")
+            return ApiResponse(status200: false, message: "Remove Requestor Error - Network Endpoint Error")
         } catch NetworkError.invalidResponse {
-            print ("Dash invalid response")
+            return ApiResponse(status200: false, message: "Remove Requestor Error - Invalid Response")
         } catch NetworkError.unauthorized {
             do {
                 try await AuthManager.shared.logout()
-            } catch {print("logout err")}
+            } catch {return ApiResponse(status200: false, message: "Remove Requestor Error - Unauthorized, login again")}
         } catch {
-            print ("Dash unexpected error")
+            return ApiResponse(status200: false, message: "Remove Requestor Error - Unexpected Error")
         }
+        return ApiResponse(status200: true, message: nil)
     }
     
-    func deleteItem(trip: String, itemName: String, itemsAmount: Int) async {
+    func deleteItem(trip: String, itemName: String, itemsAmount: Int) async throws -> ApiResponse {
         do{
             let request = TripData.deleteItem(tripId: trip, item: itemName, user: userNumber, itemsCount: itemsAmount)
             guard let itemDeleted = try await NetworkManager.shared.execute(endpoint: request, auth: true, type: TripInfo.self) else {
@@ -204,16 +201,17 @@ class TripsViewModel: ObservableObject {
                 print("item deleted")
             }
         } catch NetworkError.invalidURL {
-            print ("Dash invalid URL")
+            return ApiResponse(status200: false, message: "Item Deletion Error - Network Endpoint Error")
         } catch NetworkError.invalidResponse {
-            print ("Dash invalid response")
+            return ApiResponse(status200: false, message: "Item Deletion Error - Invalid Response")
         } catch NetworkError.unauthorized {
             do {
                 try await AuthManager.shared.logout()
-            } catch {print("logout err")}
+            } catch {return ApiResponse(status200: false, message: "Item Deletion Error - Unauthorized, login again")}
         } catch {
-            print ("Dash unexpected error")
+            return ApiResponse(status200: false, message: "Item Deletion Error - Unexpected Error")
         }
+        return ApiResponse(status200: true, message: nil)
     }
     
     private func socketListener () {

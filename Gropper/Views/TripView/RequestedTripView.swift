@@ -11,6 +11,7 @@ struct RequestedTripView: View {
     @EnvironmentObject var model: TripsViewModel
     @State private var selectedItem: ItemInfo?
     @State private var itemPopover = false
+    @State private var itemDeleted: ApiResponse = ApiResponse(status200: true, message: nil)
     let trip: TripInfo
     let columns = [GridItem(.flexible(minimum: 0, maximum: 20))]
     
@@ -64,9 +65,16 @@ struct RequestedTripView: View {
                                                     Text(item.itemDescription)
                                                         .padding(.bottom, 8)
                                                     
-                                                    Button("Delete Item") {Task{await model.deleteItem(trip: trip.tripId!, itemName: item.itemName, itemsAmount: items.count)}}
+                                                    Button("Delete Item") {Task{itemDeleted = try await model.deleteItem(trip: trip.tripId!, itemName: item.itemName, itemsAmount: items.count)}}
                                                     
                                                     Button("Close") { itemPopover = false }
+                                                    
+                                                    if (itemDeleted.status200 == false) {
+                                                        Text(itemDeleted.message ?? "Error Deleting Item")
+                                                            .font(.system(size: 10, weight: .semibold))
+                                                            .foregroundColor(.red)
+                                                            .padding()
+                                                    }
                                                 }
                                                 .padding()
                                                 .presentationCompactAdaptation(.popover)
@@ -74,7 +82,7 @@ struct RequestedTripView: View {
                                     }
                                 }
                             }
-                            NavigationLink(destination: AddItemsForm(tripId: trip.tripId!, host: trip.host.phoneNumber, onFormSubmit: {Task{ await model.retrieveTrips()}})){
+                            NavigationLink(destination: AddItemsForm(tripId: trip.tripId!, host: trip.host.phoneNumber, onFormSubmit: {Task{ try await model.retrieveTrips()}})){
                                 Image(systemName: "plus.circle")
                                     .resizable()
                                     .frame(width: 40, height: 40)
