@@ -17,7 +17,7 @@ class SocketManagerService {
        
     private init() {
         let token = getItem(forKey: "refreshToken") ?? ""
-        manager = SocketManager(socketURL: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!, config: [.log(true), .compress, .extraHeaders(["Authorization": "Bearer \(token)"])])
+        manager = SocketManager(socketURL: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev")!, config: [.log(true), .compress, .extraHeaders(["Authorization": "Bearer \(token)"])])
         socket = manager.defaultSocket
         socket.connect()
         print("connected to socket")

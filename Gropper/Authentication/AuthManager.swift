@@ -37,14 +37,14 @@ class AuthManager {
         }
     }
     
-    func logout() async throws -> Bool{
+    func logout() async throws -> ApiResponse {
         do{
             guard let userNumber = try getItem(forKey: userPhone), let notificationToken = try getItem(forKey: notiToken) else {
                 try deleteToken(forKey: accessTokenKey)
                 try deleteToken(forKey: refreshTokenKey)
                 try deleteToken(forKey: userPhone)
                 NotificationCenter.default.post(name: .logout, object: nil)
-                return true
+                return ApiResponse(status200: true, message: nil)
             }
             
             let request = Authentication.logout(phoneNumber: userNumber, deviceToken: notificationToken)
@@ -55,15 +55,40 @@ class AuthManager {
                 try deleteToken(forKey: refreshTokenKey)
                 try deleteToken(forKey: userPhone)
             } else {
-                return false
+                return ApiResponse(status200: false, message: "Error Logging Out - Invalid response from server")
             }
         } catch KeychainError.unknown{
-            print("Keychain error")
+            return ApiResponse(status200: false, message: "Logout Keychain Error - Unknown")
         } catch {
-            print("Logout Error")
+            return ApiResponse(status200: false, message: "Unknown Logout Error")
         }
         NotificationCenter.default.post(name: .logout, object: nil)
-        return true
+        return ApiResponse(status200: true, message: nil)
+    }
+    
+    func deleteAccount() async throws -> ApiResponse {
+        do{
+            guard let userNumber = try getItem(forKey: userPhone) else {
+                return ApiResponse(status200: false, message: "No Phone Number Associated With Device to Delete")
+            }
+            
+            let deleteAccountRequest = Authentication.deleteAccount(phoneNumber: userNumber)
+            let deleteAccountResponse = try await NetworkManager.shared.execute(endpoint: deleteAccountRequest, auth: true, type: Bool.self)
+            
+            if(deleteAccountResponse == true) {
+                try deleteToken(forKey: accessTokenKey)
+                try deleteToken(forKey: refreshTokenKey)
+                try deleteToken(forKey: userPhone)
+            } else {
+                return ApiResponse(status200: false, message: "Delete Account Failed - Server Error Removing Account from APNs")
+            }
+        } catch KeychainError.unknown{
+            return ApiResponse(status200: false, message: "Keychain Logout Unknown Error")
+        } catch {
+            return ApiResponse(status200: false, message: "Unknown Logout Error")
+        }
+        NotificationCenter.default.post(name: .logout, object: nil)
+        return ApiResponse(status200: true, message: nil)
     }
 }
 

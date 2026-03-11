@@ -16,7 +16,7 @@ struct Authentication: Endpoint {
     
     static func sendOtp(mobileNumber: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev")!,
             path: "generate-otp",
             method: .post,
             headers: ["Content-Type": "application/json"],
@@ -26,7 +26,7 @@ struct Authentication: Endpoint {
     
     static func verifyOtp(mobileNumber: String, otp: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev")!,
             path: "verify-otp",
             method: .post,
             headers: ["Content-Type": "application/json"],
@@ -37,7 +37,7 @@ struct Authentication: Endpoint {
     
     static func verifyRefreshToken(token: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev")!,
             path: "verify-refresh",
             method: .post,
             headers: ["Authorization": token]
@@ -46,7 +46,7 @@ struct Authentication: Endpoint {
     
     static func allowNotifications(phoneNumber: String, token: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev")!,
             path: "allow-notifications",
             method: .post,
             headers: ["Content-Type": "application/json"],
@@ -57,12 +57,22 @@ struct Authentication: Endpoint {
     
     static func logout(phoneNumber: String, deviceToken: String) -> Authentication {
         return Authentication(
-            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev/")!,
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev")!,
             path: "logout",
             method: .post,
             headers: ["Content-Type": "application/json"],
             body: ["userNumber": phoneNumber,
                    "userToken": deviceToken]
+        )
+    }
+    
+    static func deleteAccount(phoneNumber: String) -> Authentication {
+        return Authentication(
+            baseUrl: URL(string: "https://inoperable-guillermo-unconcentrically.ngrok-free.dev")!,
+            path: "delete-account",
+            method: .post,
+            headers: ["Content-Type": "application/json"],
+            body: ["userNumber": phoneNumber]
         )
     }
 }

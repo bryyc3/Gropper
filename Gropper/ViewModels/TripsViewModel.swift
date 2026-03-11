@@ -214,7 +214,29 @@ class TripsViewModel: ObservableObject {
         return ApiResponse(status200: true, message: nil)
     }
     
-    private func socketListener () {
+    func deleteAccountData() async throws -> ApiResponse{
+        do{
+            for trip in requestedTrips ?? [] {
+                 try await removeRequestor(requestorInfo: userNumber, trip: trip.tripId!)
+            }
+            for trip in hostedTrips ?? [] {
+                 try await deleteTrip(trip: trip.tripId!)
+            }
+        } catch NetworkError.invalidURL {
+            return ApiResponse(status200: false, message: "Item Deletion Error - Network Endpoint Error")
+        } catch NetworkError.invalidResponse {
+            return ApiResponse(status200: false, message: "Item Deletion Error - Invalid Response")
+        } catch NetworkError.unauthorized {
+            do {
+                try await AuthManager.shared.logout()
+            } catch {return ApiResponse(status200: false, message: "Item Deletion Error - Unauthorized, login again")}
+        } catch {
+            return ApiResponse(status200: false, message: "Item Deletion Error - Unexpected Error")
+        }
+        return try await AuthManager.shared.deleteAccount()
+    }
+    
+    private func socketListener() {
         let socket = SocketManagerService.shared.socket
         
         socket.off("newHostedTrip")
